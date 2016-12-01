@@ -1,5 +1,11 @@
 package persistence;
 
+/***
+ * @author lmrodrigues
+ * 
+ */
+
+
 import domain.User;
 import java.util.List;
 
@@ -29,7 +35,7 @@ public class UserCRUD extends AbstractCRUD {
 		return null;
 	}
 
-	public Boolean replicateUsername() {
+	public Boolean replicateUsername(String username) {
 		return null;
 	}
 

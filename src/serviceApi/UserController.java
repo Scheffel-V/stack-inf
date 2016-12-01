@@ -17,8 +17,8 @@ public class UserController {
 		return null;
 	}
 
-	public void login(String username, String password) {
-
+	public Void login(String username, String password) {
+		return null;
 	}
 
 	public Void blockUser(User logged, String username) {

@@ -1,5 +1,10 @@
 package persistence;
 
+/***
+ * @author lmrodrigues
+ * 
+ */
+
 import domain.Question;
 import domain.Answer;
 import domain.Comment;
@@ -44,15 +49,15 @@ public class ContentsCRUD extends AbstractCRUD {
 		return null;
 	}
 
-	public Double getMaxQuestionId() {
+	public Integer getMaxQuestionId() {
 		return null;
 	}
 
-	public Double getMaxCommentId() {
+	public Integer getMaxCommentId() {
 		return null;
 	}
 
-	public Double getMaxAnswerId() {
+	public Integer getMaxAnswerId() {
 		return null;
 	}
 

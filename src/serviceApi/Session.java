@@ -36,8 +36,8 @@ public class Session implements ServiceAPI {
 	/**
 	 * @see serviceApi.ServiceAPI#login(java.lang.String, java.lang.String)
 	 */
-	public void login(String username, String password) {
-
+	public Void login(String username, String password) {
+		return null;
 	}
 
 

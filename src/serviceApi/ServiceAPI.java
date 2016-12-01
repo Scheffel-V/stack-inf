@@ -10,7 +10,7 @@ public interface ServiceAPI {
 
 	public abstract void newAccount(String username, String password, String email, String name, Permission userPermission);
 
-	public abstract void login(String username, String password);
+	public abstract Void login(String username, String password);
 
 	public abstract void logout();
 

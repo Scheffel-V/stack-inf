@@ -19,7 +19,7 @@ public class Answer extends AbstractContent {
 
 	}
 
-	public Answer(String text, String author, double id, Double mainQuestionID) {
+	public Answer(String text, String author, Integer id) {
 
 	}
 

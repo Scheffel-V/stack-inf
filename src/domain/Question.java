@@ -1,7 +1,7 @@
 package domain;
 
-/**
- * @author lmrodrigues 
+/***
+ * @author lmrodrigues
  * 
  */
 
@@ -24,8 +24,8 @@ public class Question extends AbstractContent {
 	public Question() {
 
 	}
-	
-	public Question(String text, List<String> tags, String title, String author, double id) {
+
+	public Question(String text, List<String> tags, String title, String author, Integer id) {
 
 	}
 
@@ -49,24 +49,24 @@ public class Question extends AbstractContent {
 		return null;
 	}
 
-	public void addAnswer(Answer answer) {
-
+	public Void addAnswer(Answer answer) {
+		return null;
 	}
 
-	public void delAnswer(Answer answer) {
-
+	public Void delAnswer(Answer answer) {
+		return null;
 	}
 
 	public List<Comment> getComments() {
 		return null;
 	}
 
-	public void addComment(Comment comment) {
-
+	public Void addComment(Comment comment) {
+		return null;
 	}
 
-	public void delComment(Comment comment) {
-
+	public Void delComment(Comment comment) {
+		return null;
 	}
 
 	public Answer getBestAnswer() {
