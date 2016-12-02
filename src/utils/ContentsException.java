@@ -2,14 +2,15 @@ package utils;
 
 public class ContentsException extends Exception {
 
-	private String message;
+    private String message;
 
-	public ContentsException ContentException(String message) {
-		return null;
-	}
+    public ContentsException(String message) {
 
-	public String getMessageI() {
-		return null;
-	}
+    }
+
+    @Override
+    public String getMessage() {
+        return null;
+    }
 
 }

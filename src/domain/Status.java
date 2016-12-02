@@ -2,8 +2,8 @@ package domain;
 
 public enum Status {
 
-	OPEN,
+    OPEN,
 
-	CLOSED;
+    CLOSED;
 
 }

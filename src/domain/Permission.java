@@ -2,10 +2,10 @@ package domain;
 
 public enum Permission {
 
-	COMMON,
+    COMMON,
 
-	MODERATOR,
+    MODERATOR,
 
-	ADMIN;
+    ADMIN;
 
 }

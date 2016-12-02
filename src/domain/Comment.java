@@ -4,19 +4,17 @@ package domain;
  * @author lmrodrigues 
  * 
  */
-
-import javax.persistence.*;
-
+import javax.persistence.Entity;
 
 @Entity
 public class Comment extends AbstractContent {
 
-	public Comment() {
+    public Comment() {
 
-	}
+    }
 
-	public Comment(String text, String author, Double commentID) {
+    public Comment(String text, String author, Double commentID) {
 
-	}
+    }
 
 }
