@@ -1,13 +1,13 @@
 package domain;
 
-/**
- * @author lmrodrigues 
- * 
- */
-
 import java.util.List;
 
 import javax.persistence.Entity;
+
+/**
+ * @author lmrodrigues
+ * 
+ */
 
 @Entity
 public class Answer extends AbstractContent {
@@ -32,24 +32,24 @@ public class Answer extends AbstractContent {
 
     }
 
-    public Void delComment(Comment comment) {
-        return null;
+    public void delComment(Comment comment) {
+
     }
 
     public Integer getUpVotes() {
         return null;
     }
 
-    public Void addUpVotes() {
-        return null;
+    public void addUpVotes() {
+
     }
 
     public Integer getDownVotes() {
         return null;
     }
 
-    public Void addDownVotes() {
-        return null;
+    public void addDownVotes() {
+
     }
 
 }

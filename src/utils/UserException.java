@@ -1,5 +1,10 @@
 package utils;
 
+/**
+ * @author lmrodrigues
+ * 
+ */
+
 public class UserException extends Exception {
 
     private String message;

@@ -1,14 +1,14 @@
 package domain;
 
-/***
- * @author lmrodrigues
- * 
- */
-
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+/**
+ * @author lmrodrigues
+ * 
+ */
 
 @Entity
 public class User {
@@ -76,12 +76,12 @@ public class User {
         return null;
     }
 
-    public Void blockUser() {
-        return null;
+    public void blockUser() {
+
     }
 
-    public Void unblockUser() {
-        return null;
+    public void unblockUser() {
+
     }
 
 }

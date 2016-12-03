@@ -1,5 +1,10 @@
 package utils;
 
+/**
+ * @author lmrodrigues
+ * 
+ */
+
 public class ContentsException extends Exception {
 
     private String message;

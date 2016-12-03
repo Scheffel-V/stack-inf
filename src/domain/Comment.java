@@ -1,10 +1,11 @@
 package domain;
 
+import javax.persistence.Entity;
+
 /**
- * @author lmrodrigues 
+ * @author lmrodrigues
  * 
  */
-import javax.persistence.Entity;
 
 @Entity
 public class Comment extends AbstractContent {

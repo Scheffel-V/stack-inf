@@ -8,6 +8,11 @@ import domain.User;
 import persistence.ContentsCRUD;
 import utils.ContentsException;
 
+/**
+ * @author lmrodrigues
+ *
+ */
+
 public class ContentsController {
 
     private ContentsCRUD contentCRUD;
@@ -28,12 +33,12 @@ public class ContentsController {
 
     }
 
-    public Void editContent(User logged, AbstractContent content) {
-        return null;
+    public void editContent(User logged, AbstractContent content) {
+
     }
 
-    public Void deleteContent(User logged, AbstractContent content) {
-        return null;
+    public void deleteContent(User logged, AbstractContent content) {
+
     }
 
     public Question selectQuestion(Integer questionID) {
@@ -48,32 +53,32 @@ public class ContentsController {
         return null;
     }
 
-    public Void bestAnswer(User logged, Integer questionID, Integer answerID) {
-        return null;
+    public void bestAnswer(User logged, Integer questionID, Integer answerID) {
+
     }
 
-    public Void closeQuestion(User logged, Integer questionID) {
-        return null;
+    public void closeQuestion(User logged, Integer questionID) {
+
     }
 
-    public Void openQuestion(User logged, Integer questionID) {
-        return null;
+    public void openQuestion(User logged, Integer questionID) {
+
     }
 
-    public Void upVoteAnswer(User logged, Integer answerID) {
-        return null;
+    public void upVoteAnswer(User logged, Integer answerID) {
+
     }
 
-    public Void downVoteAnswer(User logged, Integer answerID) {
-        return null;
+    public void downVoteAnswer(User logged, Integer answerID) {
+
     }
 
     private Integer generateID() {
         return null;
     }
 
-    private ContentsException unauthorizedException() {
-        return null;
+    private void unauthorizedException() throws ContentsException {
+
     }
 
 }

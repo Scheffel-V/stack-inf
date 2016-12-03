@@ -1,13 +1,13 @@
 package domain;
 
+import java.util.List;
+
+import javax.persistence.Entity;
+
 /***
  * @author lmrodrigues
  * 
  */
-
-import java.util.List;
-
-import javax.persistence.Entity;
 
 @Entity
 public class Question extends AbstractContent {
@@ -31,40 +31,40 @@ public class Question extends AbstractContent {
         return null;
     }
 
-    public Void setTitle(String newTitle) {
-        return null;
+    public void setTitle(String newTitle) {
+
     }
 
     public List<String> getTags() {
         return null;
     }
 
-    public Void setTags(List<String> tags) {
-        return null;
+    public void setTags(List<String> tags) {
+
     }
 
     public List<Answer> getAnswers() {
         return null;
     }
 
-    public Void addAnswer(Answer answer) {
-        return null;
+    public void addAnswer(Answer answer) {
+
     }
 
-    public Void delAnswer(Answer answer) {
-        return null;
+    public void delAnswer(Answer answer) {
+
     }
 
     public List<Comment> getComments() {
         return null;
     }
 
-    public Void addComment(Comment comment) {
-        return null;
+    public void addComment(Comment comment) {
+
     }
 
-    public Void delComment(Comment comment) {
-        return null;
+    public void delComment(Comment comment) {
+
     }
 
     public Answer getBestAnswer() {
@@ -79,12 +79,12 @@ public class Question extends AbstractContent {
         return null;
     }
 
-    public Void openQuestion() {
-        return null;
+    public void openQuestion() {
+
     }
 
-    public Void closeQuestion() {
-        return null;
+    public void closeQuestion() {
+
     }
 
 }

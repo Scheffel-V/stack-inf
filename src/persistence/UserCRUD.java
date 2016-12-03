@@ -1,42 +1,42 @@
 package persistence;
 
+import java.util.List;
+
+import domain.User;
+
 /***
  * @author lmrodrigues
  * 
  */
 
-
-import domain.User;
-import java.util.List;
-
 public class UserCRUD extends AbstractCRUD {
 
-	public UserCRUD() {
+    public UserCRUD() {
 
-	}
+    }
 
-	public Void create(User newUser) {
-		return null;
-	}
+    public void create(User newUser) {
 
-	public User read(String username) {
-		return null;
-	}
+    }
 
-	public Void update(User user) {
-		return null;
-	}
+    public User read(String username) {
+        return null;
+    }
 
-	public Void delete(User user) {
-		return null;
-	}
+    public void update(User user) {
 
-	public List<User> listAll() {
-		return null;
-	}
+    }
 
-	public Boolean replicateUsername(String username) {
-		return null;
-	}
+    public void delete(User user) {
+
+    }
+
+    public List<User> listAll() {
+        return null;
+    }
+
+    public Boolean replicateUsername(String username) {
+        return null;
+    }
 
 }

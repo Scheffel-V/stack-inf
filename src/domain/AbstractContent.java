@@ -1,14 +1,14 @@
 package domain;
 
-/**
- * @author lmrodrigues 
- * 
- */
-
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;;
+
+/**
+ * @author lmrodrigues
+ * 
+ */
 
 @Entity
 public abstract class AbstractContent {

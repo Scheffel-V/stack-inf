@@ -7,12 +7,17 @@ import domain.Permission;
 import domain.Question;
 import domain.User;
 
+/**
+ * @author lmrodrigues
+ * 
+ */
+
 public interface ServiceAPI {
 
     public abstract void newAccount(String username, String password, String email, String name,
             Permission userPermission);
 
-    public abstract Void login(String username, String password);
+    public abstract void login(String username, String password);
 
     public abstract void logout();
 
@@ -30,9 +35,9 @@ public interface ServiceAPI {
 
     public abstract void newComment(String text, AbstractContent content);
 
-    public abstract Void editContent(AbstractContent content);
+    public abstract void editContent(AbstractContent content);
 
-    public abstract Void deleteContent(AbstractContent content);
+    public abstract void deleteContent(AbstractContent content);
 
     public abstract Question selectQuestion(Integer questionID);
 
@@ -42,13 +47,13 @@ public interface ServiceAPI {
 
     public abstract void bestAnswer(Integer questionID, Integer answerID);
 
-    public abstract Void closeQuestion(Integer questionID);
+    public abstract void closeQuestion(Integer questionID);
 
-    public abstract Void openQuestion(Integer questionID);
+    public abstract void openQuestion(Integer questionID);
 
-    public abstract Void upVoteAnswer(Integer answerID);
+    public abstract void upVoteAnswer(Integer answerID);
 
-    public abstract Void downVoteAnswer(Integer answerID);
+    public abstract void downVoteAnswer(Integer answerID);
 
     public abstract User getLoggedUser();
 

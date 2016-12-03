@@ -7,6 +7,11 @@ import domain.Permission;
 import domain.Question;
 import domain.User;
 
+/**
+ * @author lmrodrigues
+ * 
+ */
+
 public class Session implements ServiceAPI {
 
     private User loggedUser;
@@ -36,8 +41,8 @@ public class Session implements ServiceAPI {
     /**
      * @see serviceApi.ServiceAPI#login(java.lang.String, java.lang.String)
      */
-    public Void login(String username, String password) {
-        return null;
+    public void login(String username, String password) {
+
     }
 
     /**
@@ -116,15 +121,15 @@ public class Session implements ServiceAPI {
     /**
      * @see serviceApi.ServiceAPI#editContent(domain.AbstractContent)
      */
-    public Void editContent(AbstractContent content) {
-        return null;
+    public void editContent(AbstractContent content) {
+
     }
 
     /**
      * @see serviceApi.ServiceAPI#deleteContent(domain.AbstractContent)
      */
-    public Void deleteContent(AbstractContent content) {
-        return null;
+    public void deleteContent(AbstractContent content) {
+
     }
 
     /**
@@ -163,29 +168,29 @@ public class Session implements ServiceAPI {
     /**
      * @see serviceApi.ServiceAPI#closeQuestion(java.lang.Integer)
      */
-    public Void closeQuestion(Integer questionID) {
-        return null;
+    public void closeQuestion(Integer questionID) {
+
     }
 
     /**
      * @see serviceApi.ServiceAPI#openQuestion(java.lang.Integer)
      */
-    public Void openQuestion(Integer questionID) {
-        return null;
+    public void openQuestion(Integer questionID) {
+
     }
 
     /**
      * @see serviceApi.ServiceAPI#upVoteAnswer(java.lang.Integer)
      */
-    public Void upVoteAnswer(Integer answerID) {
-        return null;
+    public void upVoteAnswer(Integer answerID) {
+
     }
 
     /**
      * @see serviceApi.ServiceAPI#downVoteAnswer(java.lang.Integer)
      */
-    public Void downVoteAnswer(Integer answerID) {
-        return null;
+    public void downVoteAnswer(Integer answerID) {
+
     }
 
 }

@@ -1,22 +1,21 @@
 package persistence;
 
+import javax.persistence.EntityManager;
+
 /***
  * @author lmrodrigues
  * 
  */
 
-import javax.persistence.*;
-
 public abstract class AbstractCRUD {
-	private EntityManager entityManager;
+    private EntityManager entityManager;
 
-	public AbstractCRUD(){
+    public AbstractCRUD() {
 
-	}
+    }
 
-
-	public EntityManager getEntityManager(){
-		return this.entityManager;
-	}
+    public EntityManager getEntityManager() {
+        return this.entityManager;
+    }
 
 }

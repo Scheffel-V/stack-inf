@@ -5,6 +5,11 @@ import domain.User;
 import persistence.UserCRUD;
 import utils.UserException;
 
+/**
+ * @author lmrodrigues
+ * 
+ */
+
 public class UserController {
 
     private UserCRUD userCRUD;
@@ -17,28 +22,28 @@ public class UserController {
         return null;
     }
 
-    public Void login(String username, String password) {
-        return null;
+    public void login(String username, String password) {
+
     }
 
-    public Void blockUser(User logged, String username) {
-        return null;
+    public void blockUser(User logged, String username) {
+
     }
 
-    public Void unblockUser(User logged, String username) {
-        return null;
+    public void unblockUser(User logged, String username) {
+
     }
 
     public void changeUserPermission(User logged, String username) {
 
     }
 
-    public Void changeUserPassword(User user, String newPassword) {
-        return null;
+    public void changeUserPassword(User user, String newPassword) {
+
     }
 
-    private UserException unauthorizedException() {
-        return null;
+    private void unauthorizedException() throws UserException {
+
     }
 
 }
