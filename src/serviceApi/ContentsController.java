@@ -17,10 +17,6 @@ import utils.ContentsException;
  *
  */
 
-/**
- * @author Felipe
- *
- */
 public class ContentsController {
 
     private ContentsCRUD contentCRUD;
@@ -86,7 +82,7 @@ public class ContentsController {
             this.contentCRUD.update(question);
             this.contentCRUD.create(newAnswer);
         } else {
-            unauthorizedException();
+            unauthorizedException("closedQuestion");
         }
     }
 
@@ -119,7 +115,7 @@ public class ContentsController {
                 this.contentCRUD.update(content);
                 this.contentCRUD.create(newComment);
             } else {
-                this.unauthorizedException();
+                this.unauthorizedException("notAbleForCommentContent");
             }
         }
     }
@@ -140,7 +136,7 @@ public class ContentsController {
         if (this.userAbleToEditContent(logged, content)) {
             this.contentCRUD.update(content);
         } else {
-            this.unauthorizedException();
+            this.unauthorizedException("unautorizedUser");
         }
 
     }
@@ -160,7 +156,7 @@ public class ContentsController {
         if (this.userAbleToEditContent(logged, content)) {
             this.contentCRUD.delete(content);
         } else {
-            this.unauthorizedException();
+            this.unauthorizedException("unautorizedUser");
         }
     }
 
@@ -219,7 +215,7 @@ public class ContentsController {
             question.setBestAnswer(bestAnswer);
             this.contentCRUD.update(question);
         } else {
-            this.unauthorizedException();
+            this.unauthorizedException("notAuthor");
         }
     }
 
@@ -240,7 +236,7 @@ public class ContentsController {
             closedQuestion.closeQuestion();
             this.contentCRUD.update(closedQuestion);
         } else {
-            this.unauthorizedException();
+            this.unauthorizedException("unautorizedUser");
         }
     }
 
@@ -261,7 +257,7 @@ public class ContentsController {
             opennedQuestion.openQuestion();
             this.contentCRUD.update(opennedQuestion);
         } else {
-            this.unauthorizedException();
+            this.unauthorizedException("unautorizedUser");
         }
     }
 
@@ -293,8 +289,8 @@ public class ContentsController {
         this.contentCRUD.update(answer);
     }
 
-    private void unauthorizedException() throws ContentsException {
-
+    private void unauthorizedException(String message) throws ContentsException {
+        throw new ContentsException(message);
     }
 
     private boolean userAbleToEditContent(User user, AbstractContent content) {

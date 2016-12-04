@@ -10,12 +10,12 @@ public class ContentsException extends Exception {
     private String message;
 
     public ContentsException(String message) {
-
+        this.message = message;
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return this.message;
     }
 
 }
