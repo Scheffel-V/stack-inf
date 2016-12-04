@@ -16,6 +16,15 @@ import utils.ContentsException;
  */
 
 public class ContentsCRUD extends AbstractCRUD {
+    private static final String UNIT = "ContentsCRUD";
+
+    /**
+     * Initialize a new persistence unit to deal with
+     * {@link domain.AbstracContents} persistence
+     */
+    public ContentsCRUD() {
+        super(UNIT);
+    }
 
     public void create(AbstractContent newContent) {
         beginTransaction();
@@ -24,7 +33,7 @@ public class ContentsCRUD extends AbstractCRUD {
 
     }
 
-    public Question readQuestion(Integer questionID) throws ContentsException {
+    public Question readQuestion(Long questionID) throws ContentsException {
         Question question = getEntityManager().find(Question.class, questionID);
 
         if (question != null) {
@@ -37,7 +46,7 @@ public class ContentsCRUD extends AbstractCRUD {
 
     }
 
-    public Answer readAnswer(Integer answerID) throws ContentsException {
+    public Answer readAnswer(Long answerID) throws ContentsException {
         Answer answer = getEntityManager().find(Answer.class, answerID);
 
         if (answer != null) {
@@ -50,7 +59,7 @@ public class ContentsCRUD extends AbstractCRUD {
 
     }
 
-    public Comment readComments(Integer commentID) throws ContentsException {
+    public Comment readComments(Long commentID) throws ContentsException {
         Comment comment = getEntityManager().find(Comment.class, commentID);
 
         if (comment != null) {
@@ -103,24 +112,24 @@ public class ContentsCRUD extends AbstractCRUD {
         return query.getResultList();
     }
 
-    public Integer getMaxQuestionId() {
-        TypedQuery<Integer> query =
-                getEntityManager().createQuery("SELECT MAX(id) FROM Question", Integer.class);
+    public Long getMaxQuestionId() {
+        TypedQuery<Long> query =
+                getEntityManager().createQuery("SELECT MAX(id) FROM Question", Long.class);
 
         return query.getSingleResult();
     }
 
-    public Integer getMaxCommentId() {
-        TypedQuery<Integer> query =
-                getEntityManager().createQuery("SELECT MAX(id) FROM Comment", Integer.class);
+    public Long getMaxCommentId() {
+        TypedQuery<Long> query =
+                getEntityManager().createQuery("SELECT MAX(id) FROM Comment", Long.class);
 
         return query.getSingleResult();
 
     }
 
-    public Integer getMaxAnswerId() {
-        TypedQuery<Integer> query =
-                getEntityManager().createQuery("SELECT MAX(id) FROM Answer", Integer.class);
+    public Long getMaxAnswerId() {
+        TypedQuery<Long> query =
+                getEntityManager().createQuery("SELECT MAX(id) FROM Answer", Long.class);
 
         return query.getSingleResult();
 

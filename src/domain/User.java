@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * @author lmrodrigues
@@ -12,6 +13,7 @@ import javax.persistence.Id;
  */
 
 @Entity
+@Table(name = "StackUser")
 public class User {
 
     @Id

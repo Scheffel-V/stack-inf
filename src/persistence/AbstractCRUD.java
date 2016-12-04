@@ -12,7 +12,12 @@ public abstract class AbstractCRUD {
     private EntityManager entityManager;
 
     public AbstractCRUD() {
-        this.entityManager = Persistence.createEntityManagerFactory("AbstractCRUD").createEntityManager();
+        this.entityManager =
+                Persistence.createEntityManagerFactory("AbstractCRUD").createEntityManager();
+    }
+
+    public AbstractCRUD(String unit) {
+        this.entityManager = Persistence.createEntityManagerFactory(unit).createEntityManager();
     }
 
     public EntityManager getEntityManager() {

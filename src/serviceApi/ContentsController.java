@@ -45,7 +45,7 @@ public class ContentsController {
      * @return The created Question
      */
     public Question newQuestion(User logged, String text, List<String> tags, String title) {
-        Integer id = this.contentCRUD.getMaxQuestionId() + 1;
+        Long id = this.contentCRUD.getMaxQuestionId() + 1;
 
         Question newQuestion = new Question(id, logged, text, title, tags);
         logged.addQuestion(newQuestion);
@@ -70,8 +70,8 @@ public class ContentsController {
      *             in case the Question is closed
      */
 
-    public void newAnswer(User logged, String text, Integer questionID) throws ContentsException {
-        Integer answerId = this.contentCRUD.getMaxAnswerId() + 1;
+    public void newAnswer(User logged, String text, Long questionID) throws ContentsException {
+        Long answerId = this.contentCRUD.getMaxAnswerId() + 1;
         Question question = this.contentCRUD.readQuestion(questionID);
 
         if (question.getStatus() == Status.OPEN) {
@@ -101,7 +101,7 @@ public class ContentsController {
      * @throws ContentsException
      */
     public void newComment(User logged, String text, Question question) throws ContentsException {
-        Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
+        Long commentId = this.contentCRUD.getMaxCommentId() + 1;
         Comment newComment = new Comment(commentId, logged, text);
 
         question.addComment(newComment);
@@ -125,7 +125,7 @@ public class ContentsController {
      * @throws ContentsException
      */
     public void newComment(User logged, String text, Answer answer) throws ContentsException {
-        Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
+        Long commentId = this.contentCRUD.getMaxCommentId() + 1;
         Comment newComment = new Comment(commentId, logged, text);
 
         answer.addComment(newComment);
@@ -210,8 +210,10 @@ public class ContentsController {
      * @param questionID
      *            wanted question's id
      * @return the wanted question
+     * @throws ContentsException
+     *             if question not exists
      */
-    public Question selectQuestion(Integer questionID) {
+    public Question selectQuestion(Long questionID) throws ContentsException {
         return this.contentCRUD.readQuestion(questionID);
     }
 
@@ -247,9 +249,13 @@ public class ContentsController {
      *            the id of the answer that will be set as the best answer
      * @throws ContentsException
      *             in case the user that try to set a best answer is not the
-     *             author of the question
+     *             author of the question;
+     * 
+     *             if Question not exists;
+     * 
+     *             if Answer not exists;
      */
-    public void bestAnswer(User logged, Integer questionID, Integer answerID) throws ContentsException {
+    public void bestAnswer(User logged, Long questionID, Long answerID) throws ContentsException {
         Question question = this.selectQuestion(questionID);
 
         Boolean isAuthor = logged.getUsername() == question.getAuthor().getUsername();
@@ -273,8 +279,10 @@ public class ContentsController {
      * @throws ContentsException
      *             in case the user that try changes the question's status isn't
      *             at least a ADMIN
+     * 
+     *             in case the question not exists;
      */
-    public void closeQuestion(User logged, Integer questionID) throws ContentsException {
+    public void closeQuestion(User logged, Long questionID) throws ContentsException {
         if (isAdminOrModer(logged)) {
 
             Question toClose = this.selectQuestion(questionID);
@@ -296,8 +304,10 @@ public class ContentsController {
      * @throws ContentsException
      *             in case the user who tries to change the question's status
      *             isn't at least a ADMIN
+     * 
+     *             in case question not exists
      */
-    public void openQuestion(User logged, Integer questionID) throws ContentsException {
+    public void openQuestion(User logged, Long questionID) throws ContentsException {
         if (isAdminOrModer(logged)) {
 
             Question toOpen = this.selectQuestion(questionID);
@@ -316,8 +326,10 @@ public class ContentsController {
      *            the user who wants to upvote a answer
      * @param answerID
      *            the id of the answer that will be upvoted
+     * @throws ContentsException
+     *             in case the answer not exists
      */
-    public void upVoteAnswer(Integer answerID) {
+    public void upVoteAnswer(Long answerID) throws ContentsException {
         Answer answer = this.contentCRUD.readAnswer(answerID);
         answer.addUpVotes();
         this.contentCRUD.update(answer);
@@ -330,8 +342,10 @@ public class ContentsController {
      *            the user who wants to downvote a answer
      * @param answerID
      *            the id of the answer that will be downvoted
+     * @throws ContentsException
+     *             in case the answer not exists
      */
-    public void downVoteAnswer(Integer answerID) {
+    public void downVoteAnswer(Long answerID) throws ContentsException {
         Answer answer = this.contentCRUD.readAnswer(answerID);
         answer.addDownVotes();
         this.contentCRUD.update(answer);

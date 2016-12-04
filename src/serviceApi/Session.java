@@ -159,7 +159,7 @@ public class Session implements ServiceAPI {
      * 
      * 
      */
-    public void newAnswer(String text, Integer questionID) throws ContentsException {
+    public void newAnswer(String text, Long questionID) throws ContentsException {
         User author = this.getLoggedUser();
         this.contentsController.newAnswer(author, text, questionID);
 
@@ -207,9 +207,10 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#selectQuestion(java.lang.Integer)
      */
-    public Question selectQuestion(Integer questionID) {
+    public Question selectQuestion(Long questionID) throws ContentsException {
         return this.contentsController.selectQuestion(questionID);
     }
 
@@ -236,7 +237,7 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#bestAnswer(java.lang.Integer,
      *      java.lang.Integer)
      */
-    public void bestAnswer(Integer questionID, Integer answerID) throws ContentsException {
+    public void bestAnswer(Long questionID, Long answerID) throws ContentsException {
         User user = this.getLoggedUser();
         this.contentsController.bestAnswer(user, questionID, answerID);
     }
@@ -245,7 +246,7 @@ public class Session implements ServiceAPI {
      * @throws ContentsException
      * @see serviceApi.ServiceAPI#closeQuestion(java.lang.Integer)
      */
-    public void closeQuestion(Integer questionID) throws ContentsException {
+    public void closeQuestion(Long questionID) throws ContentsException {
         User user = this.getLoggedUser();
         this.contentsController.closeQuestion(user, questionID);
     }
@@ -254,15 +255,16 @@ public class Session implements ServiceAPI {
      * @throws ContentsException
      * @see serviceApi.ServiceAPI#openQuestion(java.lang.Integer)
      */
-    public void openQuestion(Integer questionID) throws ContentsException {
+    public void openQuestion(Long questionID) throws ContentsException {
         User user = this.getLoggedUser();
         this.contentsController.openQuestion(user, questionID);
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#upVoteAnswer(java.lang.Integer)
      */
-    public void upVoteAnswer(Integer answerID) {
+    public void upVoteAnswer(Long answerID) throws ContentsException {
         User user = this.getLoggedUser();
 
         if (user != null) {
@@ -272,9 +274,10 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#downVoteAnswer(java.lang.Integer)
      */
-    public void downVoteAnswer(Integer answerID) {
+    public void downVoteAnswer(Long answerID) throws ContentsException {
         User user = this.getLoggedUser();
 
         if (user != null) {

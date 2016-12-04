@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author lmrodrigues
  * @author flmachado
  */
 @Entity
+@Table(name = "ANSWER")
 public class Answer extends AbstractContent {
 
     private List<Comment> comments;
@@ -36,7 +38,7 @@ public class Answer extends AbstractContent {
      * @param id
      *            the ID of the answer
      */
-    public Answer(Integer id, User author, String text) {
+    public Answer(Long id, User author, String text) {
         super(id, author, text);
         this.comments = new ArrayList<Comment>();
         this.upVotes = 0;

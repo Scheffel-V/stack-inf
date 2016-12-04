@@ -13,6 +13,15 @@ import utils.UserException;
  */
 
 public class UserCRUD extends AbstractCRUD {
+    private static final String UNIT = "UserCRUD";
+
+    /**
+     * Initialize a new persistence unit to deal with {@link domain.User}
+     * persistence
+     */
+    public UserCRUD() {
+        super(UNIT);
+    }
 
     public void create(User newUser) {
         beginTransaction();

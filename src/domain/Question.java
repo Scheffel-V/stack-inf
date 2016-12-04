@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /***
  * @author lmrodrigues
@@ -11,6 +12,7 @@ import javax.persistence.Entity;
  */
 
 @Entity
+@Table(name = "QUESTION")
 public class Question extends AbstractContent {
 
     private String        title;
@@ -47,7 +49,7 @@ public class Question extends AbstractContent {
      * @param id
      *            the id of the question
      */
-    public Question(Integer id, User author, String text, String title, List<String> tags) {
+    public Question(Long id, User author, String text, String title, List<String> tags) {
         super(id, author, text);
         this.title = title;
         this.tags = tags;
