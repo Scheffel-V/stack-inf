@@ -3,82 +3,315 @@ package serviceApi;
 import java.util.List;
 
 import domain.AbstractContent;
+import domain.Answer;
+import domain.Comment;
+import domain.Permission;
 import domain.Question;
+import domain.Status;
 import domain.User;
 import persistence.ContentsCRUD;
 import utils.ContentsException;
 
 /**
- * @author lmrodrigues
+ * @author flmachado
  *
  */
 
+/**
+ * @author Felipe
+ *
+ */
 public class ContentsController {
 
     private ContentsCRUD contentCRUD;
 
+    /**
+     * Create a new database for the API.
+     */
     public ContentsController() {
-
+        this.contentCRUD = new ContentsCRUD();
     }
 
+    /**
+     * Open a already existent database for the API.
+     * 
+     * @param contentsCRUD
+     *            database of API
+     */
+    public ContentsController(ContentsCRUD contentsCRUD) {
+        this.contentCRUD = contentsCRUD;
+    }
+
+    /**
+     * Creates a new Question
+     * 
+     * @param logged
+     *            Author of question
+     * @param text
+     *            Text of question
+     * @param tags
+     *            List of question's tags
+     * @param title
+     *            Question's title
+     * @return The created Question
+     */
     public Question newQuestion(User logged, String text, List<String> tags, String title) {
-        return null;
+        String authorName = logged.getUsername();
+        Integer id = this.contentCRUD.getMaxQuestionId() + 1;
+        Question newQuestion = new Question(text, tags, title, authorName, id);
+        this.contentCRUD.create(newQuestion);
+        return newQuestion;
     }
 
-    public void newAnswer(User logged, String text, Integer questionID) {
+    /**
+     * Creates a new answer for the a already existent question, in case this
+     * question is closed, throws a exception
+     * 
+     * @param logged
+     *            Answer's Author
+     * @param text
+     *            Answer's text
+     * @param questionID
+     *            Question'id of the answer
+     * @throws ContentsException
+     *             in case the Question is closed
+     */
+    public void newAnswer(User logged, String text, Integer questionID) throws ContentsException {
+        String userName = logged.getUsername();
+        Integer answerId = this.contentCRUD.getMaxAnswerId() + 1;
+        Question question = this.contentCRUD.readQuestion(questionID);
+        if (question.getStatus() == Status.OPEN) {
+            Answer newAnswer = new Answer(text, userName, answerId);
+            question.addAnswer(newAnswer);
+            this.contentCRUD.update(question);
+            this.contentCRUD.create(newAnswer);
+        } else {
+            unauthorizedException();
+        }
+    }
+
+    /**
+     * Adds a comment to a Answer or a question, if it's called with a different
+     * content throws a exception
+     * 
+     * @param logged
+     *            Author of comment
+     * @param text
+     *            comment's text
+     * @param content
+     *            Answer or question that will receive this comment
+     * @throws ContentsException
+     *             In case the content isn't a question or answer
+     */
+    public void newComment(User logged, String text, AbstractContent content) throws ContentsException {
+        String authorName = logged.getUsername();
+        Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
+        Comment newComment = new Comment(text, authorName, commentId);
+        if (content.getClass() == Question.class) {
+            Question contentIsQuestion = (Question) content;
+            contentIsQuestion.addComment(newComment);
+            this.contentCRUD.update(content);
+            this.contentCRUD.create(newComment);
+        } else {
+            if (content.getClass() == Answer.class) {
+                Answer contentIsAnswer = (Answer) content;
+                contentIsAnswer.addComment(newComment);
+                this.contentCRUD.update(content);
+                this.contentCRUD.create(newComment);
+            } else {
+                this.unauthorizedException();
+            }
+        }
+    }
+
+    /**
+     * Edit a existent content
+     * 
+     * @param logged
+     *            who edits the content
+     * @param content
+     *            the edited content
+     * @throws ContentsException
+     *             in case who edits the content doesn't have permission to edit
+     *             it it
+     */
+    public void editContent(User logged, AbstractContent content) throws ContentsException {
+
+        if (this.userAbleToEditContent(logged, content)) {
+            this.contentCRUD.update(content);
+        } else {
+            this.unauthorizedException();
+        }
 
     }
 
-    public void newComment(User logged, String text, AbstractContent content) {
-
+    /**
+     * Delete a content of dataBase
+     * 
+     * @param logged
+     *            who deletes the content
+     * @param content
+     *            the content that will be deleted
+     * @throws ContentsException
+     *             in case who wants to delete the content doesn't have
+     *             permission to delete it
+     */
+    public void deleteContent(User logged, AbstractContent content) throws ContentsException {
+        if (this.userAbleToEditContent(logged, content)) {
+            this.contentCRUD.delete(content);
+        } else {
+            this.unauthorizedException();
+        }
     }
 
-    public void editContent(User logged, AbstractContent content) {
-
-    }
-
-    public void deleteContent(User logged, AbstractContent content) {
-
-    }
-
+    /**
+     * return a specific question from the database
+     * 
+     * @param questionID
+     *            wanted question's id
+     * @return the wanted question
+     */
     public Question selectQuestion(Integer questionID) {
-        return null;
+        return this.contentCRUD.readQuestion(questionID);
     }
 
+    /**
+     * return a list of all question with the query on it's title
+     * 
+     * @param query
+     *            the subject that will be search on the question's title
+     * @return a list of all question with the query on it's title
+     */
     public List<Question> searchQuestion(String query) {
-        return null;
+        return this.contentCRUD.search(query);
     }
 
+    /**
+     * Return all question on the current database
+     * 
+     * @return all question on the database
+     */
     public List<Question> listAllQuestions() {
-        return null;
+        return this.contentCRUD.listAllQuestion();
     }
 
-    public void bestAnswer(User logged, Integer questionID, Integer answerID) {
-
+    /**
+     * Set the best answer of a question, only the author of the question can do
+     * this
+     * 
+     * @param logged
+     *            the user that want's to set the best answer
+     * @param questionID
+     *            the id of the question that will receive the best answer
+     * @param answerID
+     *            the id of the answer that will be set as the best answer
+     * @throws ContentsException
+     *             in case the user that try to set a best answer is not the
+     *             author of the question
+     */
+    public void bestAnswer(User logged, Integer questionID, Integer answerID) throws ContentsException {
+        String userName = logged.getUsername();
+        Question question = this.selectQuestion(questionID);
+        String authorName = question.getAuthor();
+        boolean ableToChooseBestAnswer = (userName == authorName);
+        if (ableToChooseBestAnswer) {
+            Answer bestAnswer = this.contentCRUD.readAnswer(answerID);
+            question.setBestAnswer(bestAnswer);
+            this.contentCRUD.update(question);
+        } else {
+            this.unauthorizedException();
+        }
     }
 
-    public void closeQuestion(User logged, Integer questionID) {
-
+    /**
+     * closed a question for answers
+     * 
+     * @param logged
+     *            the user that wants to close a question
+     * @param questionID
+     *            the id of the question that will be closed
+     * @throws ContentsException
+     *             in case the user that try changes the question's status isn't
+     *             at least a ADMIN
+     */
+    public void closeQuestion(User logged, Integer questionID) throws ContentsException {
+        if (this.areUserAdmin(logged)) {
+            Question closedQuestion = this.selectQuestion(questionID);
+            closedQuestion.closeQuestion();
+            this.contentCRUD.update(closedQuestion);
+        } else {
+            this.unauthorizedException();
+        }
     }
 
-    public void openQuestion(User logged, Integer questionID) {
-
+    /**
+     * open a question for answers
+     * 
+     * @param logged
+     *            user who wants to open a question
+     * @param questionID
+     *            id of the question that will be opened
+     * @throws ContentsException
+     *             in case the user who tries to change the question's status
+     *             isn't at least a ADMIN
+     */
+    public void openQuestion(User logged, Integer questionID) throws ContentsException {
+        if (this.areUserAdmin(logged)) {
+            Question opennedQuestion = this.selectQuestion(questionID);
+            opennedQuestion.openQuestion();
+            this.contentCRUD.update(opennedQuestion);
+        } else {
+            this.unauthorizedException();
+        }
     }
 
+    /**
+     * upvote a answer of a question
+     * 
+     * @param logged
+     *            the user who wants to upvote a answer
+     * @param answerID
+     *            the id of the answer that will be upvoted
+     */
     public void upVoteAnswer(User logged, Integer answerID) {
-
+        Answer answer = this.contentCRUD.readAnswer(answerID);
+        answer.addUpVotes();
+        this.contentCRUD.update(answer);
     }
 
+    /**
+     * downvote a answer of a question
+     * 
+     * @param logged
+     *            the user who wants to downvote a answer
+     * @param answerID
+     *            the id of the answer that will be downvoted
+     */
     public void downVoteAnswer(User logged, Integer answerID) {
-
-    }
-
-    private Integer generateID() {
-        return null;
+        Answer answer = this.contentCRUD.readAnswer(answerID);
+        answer.addDownVotes();
+        this.contentCRUD.update(answer);
     }
 
     private void unauthorizedException() throws ContentsException {
 
+    }
+
+    private boolean userAbleToEditContent(User user, AbstractContent content) {
+        String authorName = content.getAuthor();
+        String userName = user.getUsername();
+        if (authorName == userName || this.areUserAdmin(user))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean areUserAdmin(User user) {
+        Permission userPermission = user.getUserPermission();
+        if (userPermission == Permission.ADMIN || userPermission == Permission.MODERATOR)
+            return true;
+        else
+            return false;
     }
 
 }
