@@ -6,6 +6,7 @@ import domain.AbstractContent;
 import domain.Permission;
 import domain.Question;
 import domain.User;
+import utils.UserException;
 
 /**
  * @author lmrodrigues
@@ -14,18 +15,66 @@ import domain.User;
 
 public class Session implements ServiceAPI {
 
-    private User loggedUser;
-
-    private UserController userController;
-
+    private User               loggedUser;
+    private UserController     userController;
     private ContentsController contentsController;
 
+    /**
+     * 
+     * Create a new session to a non logged user, to log in on system, the user
+     * needs to execute the login method of this class.
+     * 
+     */
     public Session() {
+        this.loggedUser = null;
+        this.userController = new UserController();
+        this.contentsController = new ContentsController();
 
     }
 
+    /**
+     * @return the loggedUser
+     */
     public User getLoggedUser() {
-        return null;
+        return loggedUser;
+    }
+
+    /**
+     * @param loggedUser
+     *            the loggedUser to set
+     */
+    public void setLoggedUser(User loggedUser) {
+        this.loggedUser = loggedUser;
+    }
+
+    /**
+     * @return the userController
+     */
+    public UserController getUserController() {
+        return userController;
+    }
+
+    /**
+     * @param userController
+     *            the userController to set
+     */
+    public void setUserController(UserController userController) {
+        this.userController = userController;
+    }
+
+    /**
+     * @return the contentsController
+     */
+    public ContentsController getContentsController() {
+        return contentsController;
+    }
+
+    /**
+     * @param contentsController
+     *            the contentsController to set
+     */
+    public void setContentsController(ContentsController contentsController) {
+        this.contentsController = contentsController;
     }
 
     /**
@@ -39,9 +88,11 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * @throws UserException 
      * @see serviceApi.ServiceAPI#login(java.lang.String, java.lang.String)
      */
-    public void login(String username, String password) {
+    public void login(String username, String password) throws UserException {
+        this.loggedUser = getUserController().login(username, password);
 
     }
 

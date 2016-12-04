@@ -6,6 +6,7 @@ import domain.AbstractContent;
 import domain.Permission;
 import domain.Question;
 import domain.User;
+import utils.UserException;
 
 /**
  * @author lmrodrigues
@@ -17,7 +18,15 @@ public interface ServiceAPI {
     public abstract void newAccount(String username, String password, String email, String name,
             Permission userPermission);
 
-    public abstract void login(String username, String password);
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param username
+     * @param password
+     * @throws UserException
+     */
+    public abstract void login(String username, String password) throws UserException;
 
     public abstract void logout();
 

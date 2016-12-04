@@ -10,6 +10,11 @@ import javax.persistence.Id;
  * 
  */
 
+/**
+ * @author lmrodrigues
+ * 
+ */
+
 @Entity
 public class User {
 
@@ -21,67 +26,199 @@ public class User {
     private Boolean        blockStatus;
     private Permission     userPermission;
     private List<Question> userQuestions;
-    private List<Answer>   userAnswer;
+    private List<Answer>   userAnswers;
     private List<Comment>  userComments;
 
+    /**
+     * Default constructor to User Class, set all attributes to null.
+     */
     public User() {
-
+        this.username = null;
+        this.password = null;
+        this.email = null;
+        this.name = null;
+        this.userPermission = null;
+        this.blockStatus = null;
+        this.userAnswers = null;
+        this.userQuestions = null;
+        this.userComments = null;
     }
 
-    public User(String username, String password, double id, String email, String name, Permission userPermission) {
-
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param username
+     * @param password
+     * @param email
+     * @param name
+     */
+    public User(String username, String password, String email, String name) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.userPermission = Permission.COMMON;
+        this.blockStatus = false;
+        this.userAnswers = null;
+        this.userQuestions = null;
+        this.userComments = null;
     }
 
+    /**
+     * @return the username
+     */
     public String getUsername() {
-        return null;
+        return username;
     }
 
+    /**
+     * @param username
+     *            the username to set
+     */
     public void setUsername(String username) {
-
+        this.username = username;
     }
 
+    /**
+     * @return the password
+     */
     public String getPassword() {
-        return null;
+        return password;
     }
 
-    public void setPassword(String newPassword) {
-
+    /**
+     * @param password
+     *            the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
+    /**
+     * @return the email
+     */
     public String getEmail() {
-        return null;
+        return email;
     }
 
+    /**
+     * @param email
+     *            the email to set
+     */
     public void setEmail(String email) {
-
+        this.email = email;
     }
 
+    /**
+     * @return the name
+     */
     public String getName() {
-        return null;
+        return name;
     }
 
+    /**
+     * @param name
+     *            the name to set
+     */
     public void setName(String name) {
-
+        this.name = name;
     }
 
-    public void setPermission(Permission permission) {
-
-    }
-
-    public Permission getPermission() {
-        return null;
-    }
-
+    /**
+     * @return the blockStatus
+     */
     public Boolean isBlock() {
-        return null;
+        return this.blockStatus;
     }
 
+    /**
+     * set the blockStatus to true;
+     */
     public void blockUser() {
-
+        this.blockStatus = true;
     }
 
+    /**
+     * set the blockStatus to false;
+     */
     public void unblockUser() {
+        this.blockStatus = false;
+    }
 
+    /**
+     * @return the blockStatus
+     */
+    public Boolean getBlockStatus() {
+        return blockStatus;
+    }
+
+    /**
+     * @param blockStatus
+     *            the blockStatus to set
+     */
+    public void setBlockStatus(Boolean blockStatus) {
+        this.blockStatus = blockStatus;
+    }
+
+    /**
+     * @return the userPermission
+     */
+    public Permission getUserPermission() {
+        return userPermission;
+    }
+
+    /**
+     * @param userPermission
+     *            the userPermission to set
+     */
+    public void setUserPermission(Permission userPermission) {
+        this.userPermission = userPermission;
+    }
+
+    /**
+     * @return the userQuestions
+     */
+    public List<Question> getUserQuestions() {
+        return userQuestions;
+    }
+
+    /**
+     * @param userQuestions
+     *            the userQuestions to set
+     */
+    public void setUserQuestions(List<Question> userQuestions) {
+        this.userQuestions = userQuestions;
+    }
+
+    /**
+     * @return the userAnswers
+     */
+    public List<Answer> getUserAnswers() {
+        return userAnswers;
+    }
+
+    /**
+     * @param userAnswers
+     *            the userAnswers to set
+     */
+    public void setUserAnswers(List<Answer> userAnswers) {
+        this.userAnswers = userAnswers;
+    }
+
+    /**
+     * @return the userComments
+     */
+    public List<Comment> getUserComments() {
+        return userComments;
+    }
+
+    /**
+     * @param userComments
+     *            the userComments to set
+     */
+    public void setUserComments(List<Comment> userComments) {
+        this.userComments = userComments;
     }
 
 }
