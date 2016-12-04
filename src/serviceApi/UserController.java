@@ -7,100 +7,165 @@ import utils.UserException;
 
 /**
  * @author lmrodrigues
- * 
+ * @author pcrachevsky
  */
 
 public class UserController {
 
     private UserCRUD userCRUD;
 
+    /**
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     */
     public UserController() {
+        this.userCRUD = new UserCRUD();
 
     }
 
-    public void newAccount(String username, String password, String email, String name, Permission userPermission) {
-        User newUser;
-        Integer maxId;
-        if (userCRUD.replicateUsername(username) == false) {
-            maxId = userCRUD.getMaxUserId();
-            newUser = new User(username, password, email, name, maxId);
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param username
+     * @param password
+     * @param email
+     * @param name
+     * @param userPermission
+     * @throws UserException
+     */
+    public void newAccount(String username, String password, String email, String name, Permission userPermission)
+            throws UserException {
+
+        if (!userCRUD.isReplicatedUsername(username)) {
+            User newUser = new User(username, password, email, name);
             userCRUD.create(newUser);
+
         } else {
-            // this.unauthorizedException("Username j� existente");
+            throw new UserException("replicated.username");
+
         }
 
     }
 
-    public void login(String username, String password) {
-        User loginUser, logged;
-        loginUser = new User();
-        loginUser = userCRUD.read(username);
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param username
+     * @param password
+     * @return
+     * @throws UserException
+     */
+    public User login(String username, String password) throws UserException {
+        User requestedUser = userCRUD.read(username);
 
-        if (loginUser.getPassword() != password) {
-            // this.unauthorizedException("Senha incorreta");
-        } else {
-            logged = new User(loginUser);
-            if (logged.isBlock() == true) {
-                // this.unauthorizedException("Voc� est� bloqueado");
-            }
-        }
+        if (requestedUser.getPassword() != password) {
+            throw new UserException("incorrect.password");
+
+        } else if (requestedUser.isBlock()) {
+            throw new UserException("blocked.user");
+
+        } else
+            return requestedUser;
 
     }
 
-    public void blockUser(User logged, String username) {
-        User userToBlock;
-        if ((logged.getPermission() == Permission.ADMIN) || (logged.getPermission() == Permission.MODERATOR)) {
-            userToBlock = userCRUD.read(username);
-            if (userToBlock.getPermission() == Permission.ADMIN) {
-                // this.unauthorizedException("Usu�rio a ser bloqueado �
-                // admistrador, logo, n�o voc� n�o pode bloquea-lo");
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param logged
+     * @param username
+     * @throws UserException
+     */
+    public void blockUser(User logged, String username) throws UserException {
+        Boolean isLoggedAdmin = logged.getUserPermission() == Permission.ADMIN;
+        Boolean isLoggedModerator = logged.getUserPermission() == Permission.MODERATOR;
+
+        if (isLoggedAdmin || isLoggedModerator) {
+
+            User userToBlock = userCRUD.read(username);
+            Boolean isAdminTargetUser = userToBlock.getUserPermission() == Permission.ADMIN;
+
+            if (isAdminTargetUser) {
+                throw new UserException("attempt.block.admin");
+
             } else {
                 userToBlock.blockUser();
                 userCRUD.update(userToBlock);
+
             }
         } else {
-            // this.unauthorizedException("Voc� n�o possui o poder de bloquear
-            // usu�rios");
+            throw new UserException("unauthorized.block.action");
+
         }
     }
 
-    public void unblockUser(User logged, String username) {
-        User userToUnblock;
-        if ((logged.getPermission() == Permission.ADMIN) || (logged.getPermission() == Permission.MODERATOR)) {
-            userToUnblock = userCRUD.read(username);
-            userToUnblock.unblockUser();
-            userCRUD.update(userToUnblock);
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param logged
+     * @param username
+     * @throws UserException
+     */
+    public void unblockUser(User logged, String username) throws UserException {
+        Boolean isLoggedAdmin = logged.getUserPermission() == Permission.ADMIN;
+        Boolean isLoggedModerator = logged.getUserPermission() == Permission.MODERATOR;
+
+        if (isLoggedAdmin || isLoggedModerator) {
+
+            User userToUnblock = userCRUD.read(username);
+            Boolean isAdminTargetUser = userToUnblock.getUserPermission() == Permission.ADMIN;
+
+            if (isAdminTargetUser) {
+                throw new UserException("attempt.unblock.admin");
+
+            } else {
+                userToUnblock.unblockUser();
+                userCRUD.update(userToUnblock);
+
+            }
         } else {
-            // this.unauthorizedException("Voc� n�o possui o poder de
-            // desbloquear usu�rios");
-        }
+            throw new UserException("unauthorized.unblock.action");
 
+        }
     }
 
-    public void changeUserPermission(User logged, String username, Permission permission) {
-        User userToChangePower;
-        if (logged.getPermission() == Permission.ADMIN) {
-            userToChangePower = userCRUD.read(username);
-            userToChangePower.setPermission(permission);
+    /**
+     * 
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param logged
+     * @param username
+     * @param newPermission
+     * @throws UserException
+     */
+    public void changeUserPermission(User logged, String username, Permission newPermission) throws UserException {
+        Boolean isLoggedAdmin = logged.getUserPermission() == Permission.ADMIN;
+
+        if (isLoggedAdmin) {
+            User userToChangePower = userCRUD.read(username);
+            userToChangePower.setUserPermission(newPermission);
             userCRUD.update(userToChangePower);
+
         } else {
-            // this.unauthorizedException("Voc� n�o possui o poder de trocar
-            // poder dos usu�rios");
+            throw new UserException("not.admin.permission");
+
         }
 
     }
 
+    /**
+     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * 
+     * @param logged
+     * @param newPassword
+     * 
+     */
     public void changeUserPassword(User logged, String newPassword) {
         logged.setPassword(newPassword);
         userCRUD.update(logged);
-    }
-
-    public void logout(User logged) {
-        // destr�i logged
-    }
-
-    private void unauthorizedException(String message) throws UserException {
-        // UserException erro = erro.UserException(message);
 
     }
 

@@ -35,7 +35,7 @@ public class UserCRUD extends AbstractCRUD {
         return null;
     }
 
-    public Boolean replicateUsername(String username) {
+    public Boolean isReplicatedUsername(String username) {
         return null;
     }
 
