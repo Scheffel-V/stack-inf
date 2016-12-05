@@ -4,18 +4,22 @@ import javax.persistence.Entity;
 
 /**
  * @author lmrodrigues
+ * @author flmachado
  * 
  */
 
 @Entity
 public class Comment extends AbstractContent {
 
-    // public Comment(){
-    //
-    // }
-    //
-    public Comment(String text, String author, Integer commentID) {
-        super(commentID, author, text);
+    /**
+     * New Comment Construct
+     * 
+     * @param id
+     * @param author
+     * @param text
+     */
+    public Comment(Integer id, User author, String text) {
+        super(id, author, text);
     }
 
 }

@@ -3,6 +3,7 @@ package serviceApi;
 import java.util.List;
 
 import domain.AbstractContent;
+import domain.Answer;
 import domain.Permission;
 import domain.Question;
 import domain.User;
@@ -11,7 +12,7 @@ import utils.UserException;
 
 /**
  * @author lmrodrigues
- * 
+ * @author flmachado
  */
 
 public class Session implements ServiceAPI {
@@ -154,60 +155,57 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#newAnswer(java.lang.String, java.lang.Integer)
      * 
      * 
      */
-    public void newAnswer(String text, Integer questionID) {
+    public void newAnswer(String text, Integer questionID) throws ContentsException {
         User author = this.getLoggedUser();
-        try {
-            this.contentsController.newAnswer(author, text, questionID);
-        } catch (ContentsException e) {
-            this.closedQuestion();
-            e.printStackTrace();
-        }
+        this.contentsController.newAnswer(author, text, questionID);
+
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#newComment(java.lang.String,
      *      domain.AbstractContent)
      * 
      * 
      */
-    public void newComment(String text, AbstractContent content) {
+    public void newComment(String text, AbstractContent content) throws ContentsException {
         User author = this.getLoggedUser();
-        try {
-            this.contentsController.newComment(author, text, content);
-        } catch (ContentsException e) {
-            this.notAbleForCommentContent();
-            e.printStackTrace();
+
+        if (content instanceof Question)
+            this.contentsController.newComment(author, text, (Question) content);
+        else if (content instanceof Answer) {
+            this.contentsController.newComment(author, text, (Answer) content);
+        } else {
+            throw new ContentsException("content.not.able.to.comment");
         }
+
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#editContent(domain.AbstractContent)
      */
-    public void editContent(AbstractContent content) {
+    public void editContent(AbstractContent content) throws ContentsException {
         User user = this.getLoggedUser();
-        try {
-            this.contentsController.editContent(user, content);
-        } catch (ContentsException e) {
-            this.unautorizedUser();
-            e.printStackTrace();
-        }
+
+        this.contentsController.editContent(user, content);
+
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#deleteContent(domain.AbstractContent)
      */
-    public void deleteContent(AbstractContent content) {
+    public void deleteContent(AbstractContent content) throws ContentsException {
         User user = this.getLoggedUser();
-        try {
-            this.contentsController.deleteContent(user, content);
-        } catch (ContentsException e) {
-            this.unautorizedUser();
-            e.printStackTrace();
-        }
+
+        this.contentsController.deleteContent(user, content);
+
     }
 
     /**
@@ -236,72 +234,47 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#bestAnswer(java.lang.Integer,
      *      java.lang.Integer)
      */
-    public void bestAnswer(Integer questionID, Integer answerID) {
+    public void bestAnswer(Integer questionID, Integer answerID) throws ContentsException {
         User user = this.getLoggedUser();
-        try {
-            this.contentsController.bestAnswer(user, questionID, answerID);
-        } catch (ContentsException e) {
-            this.unautorizedUser();
-            e.printStackTrace();
-        }
+        this.contentsController.bestAnswer(user, questionID, answerID);
+
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#closeQuestion(java.lang.Integer)
      */
-    public void closeQuestion(Integer questionID) {
+    public void closeQuestion(Integer questionID) throws ContentsException {
         User user = this.getLoggedUser();
-        try {
-            this.contentsController.closeQuestion(user, questionID);
-        } catch (ContentsException e) {
-            this.unautorizedUser();
-            e.printStackTrace();
-        }
+        this.contentsController.closeQuestion(user, questionID);
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#openQuestion(java.lang.Integer)
      */
-    public void openQuestion(Integer questionID) {
+    public void openQuestion(Integer questionID) throws ContentsException {
         User user = this.getLoggedUser();
-        try {
-            this.contentsController.openQuestion(user, questionID);
-        } catch (ContentsException e) {
-            this.unautorizedUser();
-            e.printStackTrace();
-        }
+        this.contentsController.openQuestion(user, questionID);
     }
 
     /**
      * @see serviceApi.ServiceAPI#upVoteAnswer(java.lang.Integer)
      */
     public void upVoteAnswer(Integer answerID) {
-        User user = this.getLoggedUser();
-        this.contentsController.upVoteAnswer(user, answerID);
+        this.contentsController.upVoteAnswer(answerID);
     }
 
     /**
      * @see serviceApi.ServiceAPI#downVoteAnswer(java.lang.Integer)
      */
     public void downVoteAnswer(Integer answerID) {
-        User user = this.getLoggedUser();
-        this.contentsController.downVoteAnswer(user, answerID);
-    }
-
-    private void unautorizedUser() {
-
-    }
-
-    private void closedQuestion() {
-
-    }
-
-    private void notAbleForCommentContent() {
-
+        this.contentsController.downVoteAnswer(answerID);
     }
 
 }

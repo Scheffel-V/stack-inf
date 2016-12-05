@@ -6,10 +6,12 @@ import domain.AbstractContent;
 import domain.Permission;
 import domain.Question;
 import domain.User;
+import utils.ContentsException;
 import utils.UserException;
 
 /**
  * @author lmrodrigues
+ * @author flmachado
  * 
  */
 
@@ -29,6 +31,8 @@ public interface ServiceAPI {
     public abstract void login(String username, String password) throws UserException;
 
     public abstract void logout();
+
+    public abstract User getLoggedUser();
 
     public abstract void blockUser(String username);
 
@@ -58,7 +62,7 @@ public interface ServiceAPI {
      * @param questionID
      *            id of the question that will be answered
      */
-    public abstract void newAnswer(String text, Integer questionID);
+    public abstract void newAnswer(String text, Integer questionID) throws ContentsException;
 
     /**
      * Insert a new comment to a question or answer on database
@@ -68,7 +72,7 @@ public interface ServiceAPI {
      * @param content
      *            question or answer that will be commented
      */
-    public abstract void newComment(String text, AbstractContent content);
+    public abstract void newComment(String text, AbstractContent content) throws ContentsException;
 
     /**
      * Edits a content
@@ -76,7 +80,7 @@ public interface ServiceAPI {
      * @param content
      *            the edited content
      */
-    public abstract void editContent(AbstractContent content);
+    public abstract void editContent(AbstractContent content) throws ContentsException;
 
     /**
      * Delete a content
@@ -84,7 +88,7 @@ public interface ServiceAPI {
      * @param content
      *            that will be deleteds
      */
-    public abstract void deleteContent(AbstractContent content);
+    public abstract void deleteContent(AbstractContent content) throws ContentsException;
 
     /**
      * Return a specific question
@@ -119,7 +123,7 @@ public interface ServiceAPI {
      * @param answerID
      *            the answer's id that will be set as best answer
      */
-    public abstract void bestAnswer(Integer questionID, Integer answerID);
+    public abstract void bestAnswer(Integer questionID, Integer answerID) throws ContentsException;
 
     /**
      * set a status of a question as closed
@@ -127,7 +131,7 @@ public interface ServiceAPI {
      * @param questionID
      *            the id of the question that will be closed
      */
-    public abstract void closeQuestion(Integer questionID);
+    public abstract void closeQuestion(Integer questionID) throws ContentsException;
 
     /**
      * set a status of a question as open
@@ -135,7 +139,7 @@ public interface ServiceAPI {
      * @param questionID
      *            the id of the question that will be opened
      */
-    public abstract void openQuestion(Integer questionID);
+    public abstract void openQuestion(Integer questionID) throws ContentsException;
 
     /**
      * upvote a answer of a question
@@ -152,7 +156,5 @@ public interface ServiceAPI {
      *            the id of the question that will be downvoted
      */
     public abstract void downVoteAnswer(Integer answerID);
-
-    public abstract User getLoggedUser();
 
 }

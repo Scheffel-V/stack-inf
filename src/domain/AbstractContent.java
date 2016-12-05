@@ -7,7 +7,7 @@ import javax.persistence.Id;;
 
 /**
  * @author lmrodrigues
- * 
+ * @author flmachado
  */
 
 @Entity
@@ -16,10 +16,10 @@ public abstract class AbstractContent {
     @Id
     private Integer id;
     private Date    date;
-    private String  author;
+    private User    author;
     private String  text;
 
-    public AbstractContent(Integer id, String author, String text) {
+    public AbstractContent(Integer id, User author, String text) {
         this.id = id;
         this.date = new Date();
         this.author = author;
@@ -27,36 +27,64 @@ public abstract class AbstractContent {
 
     }
 
-    public Date getDate() {
-        return this.date;
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
     }
 
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * @param date
+     *            the date to set
+     */
     public void setDate(Date date) {
         this.date = date;
     }
 
-    public String getAuthor() {
-        return this.author;
+    /**
+     * @return the author
+     */
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthor(String author) {
+    /**
+     * @param author
+     *            the author to set
+     */
+    public void setAuthor(User author) {
         this.author = author;
     }
 
+    /**
+     * @return the text
+     */
     public String getText() {
-        return this.text;
+        return text;
     }
 
+    /**
+     * @param text
+     *            the text to set
+     */
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
 }

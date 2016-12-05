@@ -29,16 +29,6 @@ public class ContentsController {
     }
 
     /**
-     * Open a already existent database for the API.
-     * 
-     * @param contentsCRUD
-     *            database of API
-     */
-    public ContentsController(ContentsCRUD contentsCRUD) {
-        this.contentCRUD = contentsCRUD;
-    }
-
-    /**
      * Creates a new Question
      * 
      * @param logged
@@ -53,9 +43,13 @@ public class ContentsController {
      */
     public Question newQuestion(User logged, String text, List<String> tags, String title) {
         String authorName = logged.getUsername();
+
         Integer id = this.contentCRUD.getMaxQuestionId() + 1;
+
         Question newQuestion = new Question(text, tags, title, authorName, id);
+
         this.contentCRUD.create(newQuestion);
+
         return newQuestion;
     }
 
@@ -72,52 +66,69 @@ public class ContentsController {
      * @throws ContentsException
      *             in case the Question is closed
      */
+
     public void newAnswer(User logged, String text, Integer questionID) throws ContentsException {
-        String userName = logged.getUsername();
+        String username = logged.getUsername();
         Integer answerId = this.contentCRUD.getMaxAnswerId() + 1;
         Question question = this.contentCRUD.readQuestion(questionID);
+
         if (question.getStatus() == Status.OPEN) {
-            Answer newAnswer = new Answer(text, userName, answerId);
+            Answer newAnswer = new Answer(text, username, answerId);
+
             question.addAnswer(newAnswer);
+
             this.contentCRUD.update(question);
             this.contentCRUD.create(newAnswer);
+
         } else {
             unauthorizedException("closedQuestion");
         }
     }
 
     /**
-     * Adds a comment to a Answer or a question, if it's called with a different
-     * content throws a exception
+     * Adds a comment to a question.
      * 
      * @param logged
      *            Author of comment
      * @param text
      *            comment's text
      * @param content
-     *            Answer or question that will receive this comment
+     *            Question that will receive this comment
      * @throws ContentsException
-     *             In case the content isn't a question or answer
      */
-    public void newComment(User logged, String text, AbstractContent content) throws ContentsException {
-        String authorName = logged.getUsername();
+    public void newComment(User logged, String text, Question question) throws ContentsException {
+        String author = logged.getUsername();
         Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
-        Comment newComment = new Comment(text, authorName, commentId);
-        if (content.getClass() == Question.class) {
-            Question contentIsQuestion = (Question) content;
-            contentIsQuestion.addComment(newComment);
-            this.contentCRUD.update(content);
-            this.contentCRUD.create(newComment);
-        } else {
-            if (content.getClass() == Answer.class) {
-                Answer contentIsAnswer = (Answer) content;
-                contentIsAnswer.addComment(newComment);
-                this.contentCRUD.update(content);
-                this.contentCRUD.create(newComment);
-            } else {
-                this.unauthorizedException("notAbleForCommentContent");
-            }
-        }
+        Comment newComment = new Comment(text, author, commentId);
+
+        question.addComment(newComment);
+
+        this.contentCRUD.update(question);
+        this.contentCRUD.create(newComment);
+
+    }
+
+    /**
+     * Adds a comment to a answer.
+     * 
+     * @param logged
+     *            Author of comment
+     * @param text
+     *            comment's text
+     * @param answer
+     *            Answer that will receive this comment
+     * @throws ContentsException
+     */
+    public void newComment(User logged, String text, Answer answer) throws ContentsException {
+        String author = logged.getUsername();
+        Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
+        Comment newComment = new Comment(text, author, commentId);
+
+        answer.addComment(newComment);
+
+        this.contentCRUD.update(answer);
+        this.contentCRUD.create(newComment);
+
     }
 
     /**
@@ -269,7 +280,7 @@ public class ContentsController {
      * @param answerID
      *            the id of the answer that will be upvoted
      */
-    public void upVoteAnswer(User logged, Integer answerID) {
+    public void upVoteAnswer(Integer answerID) {
         Answer answer = this.contentCRUD.readAnswer(answerID);
         answer.addUpVotes();
         this.contentCRUD.update(answer);
@@ -283,7 +294,7 @@ public class ContentsController {
      * @param answerID
      *            the id of the answer that will be downvoted
      */
-    public void downVoteAnswer(User logged, Integer answerID) {
+    public void downVoteAnswer(Integer answerID) {
         Answer answer = this.contentCRUD.readAnswer(answerID);
         answer.addDownVotes();
         this.contentCRUD.update(answer);
