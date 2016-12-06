@@ -198,9 +198,10 @@ public class Session implements ServiceAPI {
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#deleteContent(domain.AbstractContent)
      */
-    public void deleteContent(AbstractContent content) throws ContentsException {
+    public void deleteContent(AbstractContent content) throws ContentsException, UserException {
         User user = this.getLoggedUser();
 
         this.contentsController.deleteContent(user, content);

@@ -1,9 +1,13 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /***
@@ -15,12 +19,20 @@ import javax.persistence.Table;
 @Table(name = "QUESTION")
 public class Question extends AbstractContent {
 
-    private String        title;
-    private List<String>  tags;
-    private List<Answer>  answers;
+    private String       title;
+    private List<String> tags;
+
+    @OneToMany(orphanRemoval = true)
+    private List<Answer> answers;
+
+    @OneToMany(orphanRemoval = true)
     private List<Comment> comments;
-    private Answer        bestAnswer;
-    private Status        status;
+
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "BEST_ANSWER")
+    private Answer bestAnswer;
+
+    private Status status;
 
     /**
      * creates a empty question
@@ -127,7 +139,15 @@ public class Question extends AbstractContent {
      *            the answer that will be deleted
      */
     public void delAnswer(Answer answer) {
-        this.answers.remove(answer);
+        if (answer != null) {
+            Iterator<Answer> iter = answers.iterator();
+            while (iter.hasNext()) {
+                Answer toRemove = iter.next();
+                if (toRemove.getId() == answer.getId()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -164,7 +184,15 @@ public class Question extends AbstractContent {
      *            the comment that will be deleted
      */
     public void delComment(Comment comment) {
-        this.comments.remove(comment);
+        if (comment != null) {
+            Iterator<Comment> iter = comments.iterator();
+            while (iter.hasNext()) {
+                Comment toRemove = iter.next();
+                if (toRemove.getId() == comment.getId()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     /**

@@ -16,14 +16,21 @@ import utils.ContentsException;
  */
 
 public class ContentsCRUD extends AbstractCRUD {
-    private static final String UNIT = "ContentsCRUD";
 
     /**
-     * Initialize a new persistence unit to deal with
+     * Initialize a new standard persistence unit to deal with
      * {@link domain.AbstracContents} persistence
      */
     public ContentsCRUD() {
-        super(UNIT);
+        super();
+    }
+
+    /**
+     * Initialize a new specific persistence unit to deal with
+     * {@link domain.AbstracContents} persistence
+     */
+    public ContentsCRUD(String unit) {
+        super(unit);
     }
 
     public void create(AbstractContent newContent) {
@@ -59,7 +66,7 @@ public class ContentsCRUD extends AbstractCRUD {
 
     }
 
-    public Comment readComments(Long commentID) throws ContentsException {
+    public Comment readComment(Long commentID) throws ContentsException {
         Comment comment = getEntityManager().find(Comment.class, commentID);
 
         if (comment != null) {
@@ -79,25 +86,33 @@ public class ContentsCRUD extends AbstractCRUD {
 
     }
 
-    public void delete(AbstractContent content) throws ContentsException {
+    public void delete(Question content) throws ContentsException {
         beginTransaction();
 
-        if (content instanceof Question) {
-            Question toDelete = readQuestion(content.getId());
-            getEntityManager().remove(toDelete);
+        Question toDelete = readQuestion(content.getId());
+        getEntityManager().remove(toDelete);
 
-        } else if (content instanceof Answer) {
-            Answer toDelete = readAnswer(content.getId());
-            getEntityManager().remove(toDelete);
+        commitTransaction();
 
-        } else if (content instanceof Comment) {
-            Comment toDelete = readComments(content.getId());
-            getEntityManager().remove(toDelete);
+    }
 
-        } else {
-            throw new ContentsException("content.not.exists");
+    public void delete(Answer content) throws ContentsException {
+        beginTransaction();
 
-        }
+        Answer toDelete = readAnswer(content.getId());
+        getEntityManager().remove(toDelete);
+
+        commitTransaction();
+
+    }
+
+    public void delete(Comment content) throws ContentsException {
+        beginTransaction();
+
+        Comment toDelete = readComment(content.getId());
+        getEntityManager().remove(toDelete);
+
+        commitTransaction();
 
     }
 
@@ -114,14 +129,14 @@ public class ContentsCRUD extends AbstractCRUD {
 
     public Long getMaxQuestionId() {
         TypedQuery<Long> query =
-                getEntityManager().createQuery("SELECT MAX(id) FROM Question", Long.class);
+                getEntityManager().createQuery("SELECT MAX(q.id) FROM Question q", Long.class);
 
         return query.getSingleResult();
     }
 
     public Long getMaxCommentId() {
         TypedQuery<Long> query =
-                getEntityManager().createQuery("SELECT MAX(id) FROM Comment", Long.class);
+                getEntityManager().createQuery("SELECT MAX(c.id) FROM Comment c", Long.class);
 
         return query.getSingleResult();
 
@@ -129,7 +144,7 @@ public class ContentsCRUD extends AbstractCRUD {
 
     public Long getMaxAnswerId() {
         TypedQuery<Long> query =
-                getEntityManager().createQuery("SELECT MAX(id) FROM Answer", Long.class);
+                getEntityManager().createQuery("SELECT MAX(a.id) FROM Answer a", Long.class);
 
         return query.getSingleResult();
 

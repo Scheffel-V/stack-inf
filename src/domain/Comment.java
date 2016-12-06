@@ -31,7 +31,7 @@ public class Comment extends AbstractContent {
      *            the id of the comment
      */
     public Comment(Long id, User author, String text) {
-        super(commentID, author, text);
+        super(id, author, text);
     }
 
 }

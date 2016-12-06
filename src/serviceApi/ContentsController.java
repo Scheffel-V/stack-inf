@@ -12,6 +12,7 @@ import domain.User;
 import persistence.ContentsCRUD;
 import persistence.UserCRUD;
 import utils.ContentsException;
+import utils.UserException;
 
 /**
  * @author lmrodrigues
@@ -159,6 +160,9 @@ public class ContentsController {
     }
 
     /**
+     * 
+     * TODO SPLIT THIS METHOD TO REMOVE CASTS
+     * 
      * Delete a content of dataBase
      * 
      * @param logged
@@ -170,8 +174,11 @@ public class ContentsController {
      *             permission to delete it;
      * 
      *             - in case the content to be deleted is invalid;
+     * @throws UserException
+     *             in case the author of question is invalid
      */
-    public void deleteContent(User logged, AbstractContent content) throws ContentsException {
+    public void deleteContent(User logged, AbstractContent content)
+            throws ContentsException, UserException {
         if (this.isAbleToEdit(logged, content)) {
 
             if (content instanceof Question) {
@@ -179,21 +186,21 @@ public class ContentsController {
                 author.delQuestion((Question) content);
 
                 this.userCRUD.update(author);
-                this.contentCRUD.delete(content);
+                this.contentCRUD.delete((Question) content);
 
             } else if (content instanceof Answer) {
                 User author = content.getAuthor();
                 author.delAnswer((Answer) content);
 
                 this.userCRUD.update(author);
-                this.contentCRUD.delete(content);
+                this.contentCRUD.delete((Answer) content);
 
             } else if (content instanceof Comment) {
                 User author = content.getAuthor();
-                author.delComments((Comment) content);
+                author.delComment((Comment) content);
 
                 this.userCRUD.update(author);
-                this.contentCRUD.delete(content);
+                this.contentCRUD.delete((Answer) content);
 
             } else {
                 throw new ContentsException("invalid.content");

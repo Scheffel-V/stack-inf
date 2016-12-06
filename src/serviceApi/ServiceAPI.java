@@ -144,7 +144,8 @@ public interface ServiceAPI {
      *             in case the user who tries to delete isn't admin or the
      *             author of the content, throws ContentsException
      */
-    public abstract void deleteContent(AbstractContent content) throws ContentsException;
+    public abstract void deleteContent(AbstractContent content)
+            throws ContentsException, UserException;
 
     /**
      * Return a specific question

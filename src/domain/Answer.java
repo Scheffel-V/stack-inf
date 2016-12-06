@@ -1,9 +1,11 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -14,9 +16,11 @@ import javax.persistence.Table;
 @Table(name = "ANSWER")
 public class Answer extends AbstractContent {
 
+    @OneToMany(orphanRemoval = true)
     private List<Comment> comments;
-    private Integer       upVotes;
-    private Integer       downVotes;
+
+    private Integer upVotes;
+    private Integer downVotes;
 
     /**
      * creates a empty answer
@@ -77,7 +81,15 @@ public class Answer extends AbstractContent {
      *            the comment that will be deleted
      */
     public void delComment(Comment comment) {
-        this.comments.remove(comment);
+        if (comment != null) {
+            Iterator<Comment> iter = comments.iterator();
+            while (iter.hasNext()) {
+                Comment toRemove = iter.next();
+                if (toRemove.getId() == comment.getId()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     /**
