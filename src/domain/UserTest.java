@@ -3,6 +3,7 @@
  */
 package domain;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -15,9 +16,10 @@ import org.junit.Test;
 
 /**
  * @author lmrodrigues
+ * @author Scheffel-V
  *
  */
-public class UserUnityTest {
+public class UserTest {
 
     User                user;
     ArrayList<User>     userList;
@@ -38,20 +40,23 @@ public class UserUnityTest {
                                                                                              // -
                                                                                              // User
                                                                                              // with
-                                                                                             // arguments.
+                                                                                             // arguments
 
         tags = null;
-        questions.add(new Question());
-        questions.add(new Question());
-        questions.add(new Question("Texto", tags, "Titulo", "Autor", 1));
+        questions = new ArrayList<Question>();
+        questions.add(new Question(1, userList.get(1), "text", "title", tags));
+        questions.add(new Question(2, userList.get(1), "text", "title", tags));
+        questions.add(new Question(3, userList.get(1), "text", "title", tags));
 
-        answers.add(new Answer());
-        answers.add(new Answer());
-        answers.add(new Answer("Texto", "Autor", 2));
+        answers = new ArrayList<Answer>();
+        answers.add(new Answer(4, userList.get(1), "text"));
+        answers.add(new Answer(5, userList.get(1), "text"));
+        answers.add(new Answer(6, userList.get(1), "text"));
 
-        comments.add(new Comment());
-        comments.add(new Comment());
-        comments.add(new Comment("Texto", "Autor", 3.0));
+        comments = new ArrayList<Comment>();
+        comments.add(new Comment(7, userList.get(1), "text"));
+        comments.add(new Comment(8, userList.get(1), "text"));
+        comments.add(new Comment(9, userList.get(1), "text"));
     }
 
     /**
@@ -83,7 +88,7 @@ public class UserUnityTest {
      * . This test will check if the construct with arguments is correct.
      */
     @Test
-    public final void testUserStringStringStringString() {
+    public final void testUserWithArguments() {
         assertNotNull("User constructor with arguments gives null object.", userList.get(1));
         assertTrue("Problem in username field of construct with arguments.",
                 userList.get(1).getUsername() == "vbscheffel");
@@ -95,11 +100,11 @@ public class UserUnityTest {
                 userList.get(1).getBlockStatus() == false);
         assertSame("Problem in userPermission field from construct with arguments.", Permission.COMMON,
                 userList.get(1).getUserPermission());
-        assertSame("Problem in userAnswers list field from construct with arguments.", new ArrayList<Answer>(),
+        assertEquals("Problem in userAnswers list field from construct with arguments.", new ArrayList<Answer>(),
                 userList.get(1).getUserAnswers());
-        assertSame("Problem in userComments list field from construct with arguments.", new ArrayList<Comment>(),
+        assertEquals("Problem in userComments list field from construct with arguments.", new ArrayList<Comment>(),
                 userList.get(1).getUserComments());
-        assertSame("Problem in userQuestions list field from construct with arguments.", new ArrayList<Question>(),
+        assertEquals("Problem in userQuestions list field from construct with arguments.", new ArrayList<Question>(),
                 userList.get(1).getUserQuestions());
     }
 
@@ -282,7 +287,7 @@ public class UserUnityTest {
         assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().isEmpty() == true);
         userList.get(1).setUserQuestions(questions);
         assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().isEmpty() == false);
-        assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().get(2).getId() == 1);
+        assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().get(2).getId() == 3);
     }
 
     /**
@@ -310,7 +315,7 @@ public class UserUnityTest {
         assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().isEmpty() == true);
         userList.get(1).setUserAnswers(answers);
         assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().isEmpty() == false);
-        assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().get(2).getId() == 2);
+        assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().get(2).getId() == 6);
     }
 
     /**
@@ -338,7 +343,7 @@ public class UserUnityTest {
         assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().isEmpty() == true);
         userList.get(1).setUserComments(comments);
         assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().isEmpty() == false);
-        assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().get(2).getId() == 3.0);
+        assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().get(2).getId() == 9);
     }
 
     /**
