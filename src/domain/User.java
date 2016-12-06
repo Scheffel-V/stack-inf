@@ -7,11 +7,7 @@ import javax.persistence.Id;
 
 /**
  * @author lmrodrigues
- * 
- */
-
-/**
- * @author lmrodrigues
+ * @author pcrachevsky
  * 
  */
 

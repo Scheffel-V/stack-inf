@@ -13,6 +13,7 @@ import utils.UserException;
 /**
  * @author lmrodrigues
  * @author flmachado
+ * @author Priscila
  */
 
 public class Session implements ServiceAPI {
@@ -80,17 +81,18 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * @throws UserException
      * @see serviceApi.ServiceAPI#newAccount(java.lang.String, java.lang.String,
      *      java.lang.String, java.lang.String, domain.Permission)
-     * 
-     * 
      */
-    public void newAccount(String username, String password, String email, String name, Permission userPermission) {
-
+    public void newAccount(String username, String password, String email, String name, Permission userPermission)
+            throws UserException {
+        this.userController.newAccount(username, password, email, name, userPermission);
     }
 
     /**
      * @throws UserException
+     * 
      * @see serviceApi.ServiceAPI#login(java.lang.String, java.lang.String)
      */
     public void login(String username, String password) throws UserException {
@@ -102,51 +104,48 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#logout()
      */
     public void logout() {
+        this.loggedUser = null;
 
     }
 
     /**
+     * @throws UserException
      * @see serviceApi.ServiceAPI#blockUser(java.lang.String)
-     * 
-     * 
      */
-    public void blockUser(String username) {
+    public void blockUser(String username) throws UserException {
+        this.userController.blockUser(this.getLoggedUser(), username);
 
     }
 
     /**
+     * @throws UserException
      * @see serviceApi.ServiceAPI#unblockUser(java.lang.String)
-     * 
-     * 
      */
-    public void unblockUser(String username) {
-
+    public void unblockUser(String username) throws UserException {
+        this.userController.unblockUser(this.getLoggedUser(), username);
     }
 
     /**
+     * @throws UserException
      * @see serviceApi.ServiceAPI#changeUserPermission(java.lang.String,
      *      domain.Permission)
-     * 
-     * 
      */
-    public void changeUserPermission(String username, Permission newPermission) {
-
+    public void changeUserPermission(String username, Permission newPermission) throws UserException {
+        this.userController.changeUserPermission(this.getLoggedUser(), username, newPermission);
     }
 
     /**
+     * @throws UserException
      * @see serviceApi.ServiceAPI#changeUserPassword(java.lang.String)
-     * 
-     * 
      */
-    public void changeUserPassword(String newPassword) {
-
+    public void changeUserPassword(String newPassword) throws UserException {
+        this.userController.changeUserPassword(this.getLoggedUser(), newPassword);
     }
 
     /**
+     * @throws UserException
      * @see serviceApi.ServiceAPI#newQuestion(java.lang.String, domain.,
      *      java.lang.String)
-     * 
-     * 
      */
     public void newQuestion(String text, List<String> tags, String title) {
         User author = this.getLoggedUser();
