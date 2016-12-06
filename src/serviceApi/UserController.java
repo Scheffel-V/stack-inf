@@ -15,7 +15,7 @@ public class UserController {
     private UserCRUD userCRUD;
 
     /**
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Creates a new database for the API.
      */
     public UserController() {
         this.userCRUD = new UserCRUD();
@@ -24,7 +24,8 @@ public class UserController {
 
     /**
      * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Creates a new account, if the new user name is replicated, it will throws
+     * a exception
      * 
      * @param username
      * @param password
@@ -49,7 +50,8 @@ public class UserController {
 
     /**
      * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * User login in to account, if the password is incorrect or the user is
+     * blocked, it will throws a exception
      * 
      * @param username
      * @param password
@@ -72,7 +74,8 @@ public class UserController {
 
     /**
      * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Logged user is moderator or administrator and it block another user who
+     * can't be administrator. In another case it will throws a exception.
      * 
      * @param logged
      * @param username
@@ -103,7 +106,8 @@ public class UserController {
 
     /**
      * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Logged user is moderator or administrator and it unblock another user who
+     * can't be administrator. In another case it will throws a exception.
      * 
      * @param logged
      * @param username
@@ -134,7 +138,8 @@ public class UserController {
 
     /**
      * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Logged user is administrator and it change another user's power. If the
+     * logged user isn't administrator, this method will throws a exception.
      * 
      * @param logged
      * @param username
@@ -157,7 +162,7 @@ public class UserController {
     }
 
     /**
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Logged user change its password
      * 
      * @param logged
      * @param newPassword

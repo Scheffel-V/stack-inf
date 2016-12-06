@@ -12,35 +12,80 @@ import utils.UserException;
 /**
  * @author lmrodrigues
  * @author flmachado
+ * @author Priscila
  * 
  */
 
 public interface ServiceAPI {
 
-    public abstract void newAccount(String username, String password, String email, String name,
-            Permission userPermission);
-
     /**
-     * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * Creates new account
      * 
      * @param username
+     * @param password
+     * @param email
+     * @param name
+     * @param userPermission
+     * @throws UserException
+     */
+    public abstract void newAccount(String username, String password, String email, String name,
+            Permission userPermission) throws UserException;
+
+    /**
+     * Logins in to account
+     * 
+     * @param username
+     *            the user who will login
      * @param password
      * @throws UserException
      */
     public abstract void login(String username, String password) throws UserException;
 
+    /**
+     * Logout account
+     */
     public abstract void logout();
 
+    /**
+     * @return user who logged
+     */
     public abstract User getLoggedUser();
 
-    public abstract void blockUser(String username);
+    /**
+     * Blocks another user
+     * 
+     * @param username
+     *            the user who will be blocked
+     * @throws UserException
+     */
+    public abstract void blockUser(String username) throws UserException;
 
-    public abstract void unblockUser(String username);
+    /**
+     * Unblocks another user
+     * 
+     * @param username
+     *            the user who will be unblocked
+     * @throws UserException
+     */
+    public abstract void unblockUser(String username) throws UserException;
 
-    public abstract void changeUserPermission(String username, Permission newPermission);
+    /**
+     * Changes another user's permission
+     * 
+     * @param username
+     *            the user who will change its permission
+     * @param newPermission
+     * @throws UserException
+     */
+    public abstract void changeUserPermission(String username, Permission newPermission) throws UserException;
 
-    public abstract void changeUserPassword(String newPassword);
+    /**
+     * Changes user's password
+     * 
+     * @param newPassword
+     * @throws UserException
+     */
+    public abstract void changeUserPassword(String newPassword) throws UserException;
 
     /**
      * Insert a new question on database
