@@ -10,21 +10,24 @@ import domain.Question;
 import domain.Status;
 import domain.User;
 import persistence.ContentsCRUD;
+import persistence.UserCRUD;
 import utils.ContentsException;
 
 /**
+ * @author lmrodrigues
  * @author flmachado
  *
  */
 
 public class ContentsController {
-
+    private UserCRUD     userCRUD;
     private ContentsCRUD contentCRUD;
 
     /**
      * Create a new database for the API.
      */
     public ContentsController() {
+        this.userCRUD = new UserCRUD();
         this.contentCRUD = new ContentsCRUD();
     }
 
@@ -42,12 +45,12 @@ public class ContentsController {
      * @return The created Question
      */
     public Question newQuestion(User logged, String text, List<String> tags, String title) {
-        String authorName = logged.getUsername();
-
         Integer id = this.contentCRUD.getMaxQuestionId() + 1;
 
-        Question newQuestion = new Question(text, tags, title, authorName, id);
+        Question newQuestion = new Question(id, logged, text, title, tags);
+        logged.addQuestion(newQuestion);
 
+        this.userCRUD.update(logged);
         this.contentCRUD.create(newQuestion);
 
         return newQuestion;
@@ -68,20 +71,21 @@ public class ContentsController {
      */
 
     public void newAnswer(User logged, String text, Integer questionID) throws ContentsException {
-        String username = logged.getUsername();
         Integer answerId = this.contentCRUD.getMaxAnswerId() + 1;
         Question question = this.contentCRUD.readQuestion(questionID);
 
         if (question.getStatus() == Status.OPEN) {
-            Answer newAnswer = new Answer(text, username, answerId);
+            Answer newAnswer = new Answer(answerId, logged, text);
 
             question.addAnswer(newAnswer);
+            logged.addAnswer(newAnswer);
 
+            this.userCRUD.update(logged);
             this.contentCRUD.update(question);
             this.contentCRUD.create(newAnswer);
 
         } else {
-            unauthorizedException("closedQuestion");
+            throw new ContentsException("closed.question");
         }
     }
 
@@ -97,12 +101,13 @@ public class ContentsController {
      * @throws ContentsException
      */
     public void newComment(User logged, String text, Question question) throws ContentsException {
-        String author = logged.getUsername();
         Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
-        Comment newComment = new Comment(text, author, commentId);
+        Comment newComment = new Comment(commentId, logged, text);
 
         question.addComment(newComment);
+        logged.addComment(newComment);
 
+        this.userCRUD.update(logged);
         this.contentCRUD.update(question);
         this.contentCRUD.create(newComment);
 
@@ -120,12 +125,13 @@ public class ContentsController {
      * @throws ContentsException
      */
     public void newComment(User logged, String text, Answer answer) throws ContentsException {
-        String author = logged.getUsername();
         Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
-        Comment newComment = new Comment(text, author, commentId);
+        Comment newComment = new Comment(commentId, logged, text);
 
         answer.addComment(newComment);
+        logged.addComment(newComment);
 
+        this.userCRUD.update(logged);
         this.contentCRUD.update(answer);
         this.contentCRUD.create(newComment);
 
@@ -144,10 +150,10 @@ public class ContentsController {
      */
     public void editContent(User logged, AbstractContent content) throws ContentsException {
 
-        if (this.userAbleToEditContent(logged, content)) {
+        if (this.isAbleToEdit(logged, content)) {
             this.contentCRUD.update(content);
         } else {
-            this.unauthorizedException("unautorizedUser");
+            throw new ContentsException("not.authorized.user");
         }
 
     }
@@ -160,14 +166,41 @@ public class ContentsController {
      * @param content
      *            the content that will be deleted
      * @throws ContentsException
-     *             in case who wants to delete the content doesn't have
-     *             permission to delete it
+     *             - in case who wants to delete the content doesn't have
+     *             permission to delete it;
+     * 
+     *             - in case the content to be deleted is invalid;
      */
     public void deleteContent(User logged, AbstractContent content) throws ContentsException {
-        if (this.userAbleToEditContent(logged, content)) {
-            this.contentCRUD.delete(content);
+        if (this.isAbleToEdit(logged, content)) {
+
+            if (content instanceof Question) {
+                User author = content.getAuthor();
+                author.delQuestion((Question) content);
+
+                this.userCRUD.update(author);
+                this.contentCRUD.delete(content);
+
+            } else if (content instanceof Answer) {
+                User author = content.getAuthor();
+                author.delAnswer((Answer) content);
+
+                this.userCRUD.update(author);
+                this.contentCRUD.delete(content);
+
+            } else if (content instanceof Comment) {
+                User author = content.getAuthor();
+                author.delComments((Comment) content);
+
+                this.userCRUD.update(author);
+                this.contentCRUD.delete(content);
+
+            } else {
+                throw new ContentsException("invalid.content");
+            }
+
         } else {
-            this.unauthorizedException("unautorizedUser");
+            throw new ContentsException("not.authorized.user");
         }
     }
 
@@ -217,16 +250,16 @@ public class ContentsController {
      *             author of the question
      */
     public void bestAnswer(User logged, Integer questionID, Integer answerID) throws ContentsException {
-        String userName = logged.getUsername();
         Question question = this.selectQuestion(questionID);
-        String authorName = question.getAuthor();
-        boolean ableToChooseBestAnswer = (userName == authorName);
-        if (ableToChooseBestAnswer) {
+
+        Boolean isAuthor = logged.getUsername() == question.getAuthor().getUsername();
+        if (isAuthor) {
             Answer bestAnswer = this.contentCRUD.readAnswer(answerID);
             question.setBestAnswer(bestAnswer);
             this.contentCRUD.update(question);
+
         } else {
-            this.unauthorizedException("notAuthor");
+            throw new ContentsException("user.is.not.author");
         }
     }
 
@@ -242,12 +275,14 @@ public class ContentsController {
      *             at least a ADMIN
      */
     public void closeQuestion(User logged, Integer questionID) throws ContentsException {
-        if (this.areUserAdmin(logged)) {
-            Question closedQuestion = this.selectQuestion(questionID);
-            closedQuestion.closeQuestion();
-            this.contentCRUD.update(closedQuestion);
+        if (isAdminOrModer(logged)) {
+
+            Question toClose = this.selectQuestion(questionID);
+            toClose.closeQuestion();
+            this.contentCRUD.update(toClose);
+
         } else {
-            this.unauthorizedException("unautorizedUser");
+            throw new ContentsException("unauthorized.user");
         }
     }
 
@@ -263,12 +298,14 @@ public class ContentsController {
      *             isn't at least a ADMIN
      */
     public void openQuestion(User logged, Integer questionID) throws ContentsException {
-        if (this.areUserAdmin(logged)) {
-            Question opennedQuestion = this.selectQuestion(questionID);
-            opennedQuestion.openQuestion();
-            this.contentCRUD.update(opennedQuestion);
+        if (isAdminOrModer(logged)) {
+
+            Question toOpen = this.selectQuestion(questionID);
+            toOpen.openQuestion();
+            this.contentCRUD.update(toOpen);
+
         } else {
-            this.unauthorizedException("unautorizedUser");
+            throw new ContentsException("unauthorized.user");
         }
     }
 
@@ -300,25 +337,26 @@ public class ContentsController {
         this.contentCRUD.update(answer);
     }
 
-    private void unauthorizedException(String message) throws ContentsException {
-        throw new ContentsException(message);
+    private boolean isAbleToEdit(User logged, AbstractContent content) {
+        Boolean isAuthor = logged.getUsername() == content.getAuthor().getUsername();
+
+        if (isAuthor || isAdminOrModer(logged)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    private boolean userAbleToEditContent(User user, AbstractContent content) {
-        String authorName = content.getAuthor();
-        String userName = user.getUsername();
-        if (authorName == userName || this.areUserAdmin(user))
-            return true;
-        else
-            return false;
-    }
+    private boolean isAdminOrModer(User logged) {
+        Permission userPermission = logged.getUserPermission();
+        Boolean isAdmin = userPermission == Permission.ADMIN;
+        Boolean isModer = userPermission == Permission.MODERATOR;
 
-    private boolean areUserAdmin(User user) {
-        Permission userPermission = user.getUserPermission();
-        if (userPermission == Permission.ADMIN || userPermission == Permission.MODERATOR)
+        if (isAdmin || isModer) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
 }
