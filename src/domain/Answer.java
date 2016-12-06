@@ -9,7 +9,6 @@ import javax.persistence.Entity;
  * @author lmrodrigues
  * @author flmachado
  */
-
 @Entity
 public class Answer extends AbstractContent {
 
@@ -18,11 +17,24 @@ public class Answer extends AbstractContent {
     private Integer       downVotes;
 
     /**
-     * New Answer Constructor
+     * creates a empty answer
+     */
+    public Answer() {
+        super();
+        this.comments = null;
+        this.upVotes = null;
+        this.downVotes = null;
+    }
+
+    /**
+     * creates a new answer
      * 
-     * @param id
-     * @param author
      * @param text
+     *            the text of the answer
+     * @param author
+     *            the author of the answer
+     * @param id
+     *            the ID of the answer
      */
     public Answer(Integer id, User author, String text) {
         super(id, author, text);
@@ -32,10 +44,10 @@ public class Answer extends AbstractContent {
     }
 
     /**
-     * @return the comments
+     * @return a list with all comments of this answer
      */
     public List<Comment> getComments() {
-        return comments;
+        return this.comments;
     }
 
     /**
@@ -47,23 +59,27 @@ public class Answer extends AbstractContent {
     }
 
     /**
+     * adds a comment to a answer
+     * 
      * @param comment
-     *            the comment to added
+     *            the comment that will be addicted to the answer's comments
      */
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
 
     /**
+     * deletes a comment from a answer's comments
+     * 
      * @param comment
-     *            the comment to deleted
+     *            the comment that will be deleted
      */
     public void delComment(Comment comment) {
         this.comments.remove(comment);
     }
 
     /**
-     * @return the upVotes
+     * @return the number of upvotes of the answer
      */
     public Integer getUpVotes() {
         return upVotes;
@@ -78,14 +94,14 @@ public class Answer extends AbstractContent {
     }
 
     /**
-     * Sum one to upVotes
+     * increase by one the number of upvotes of this answer
      */
     public void addUpVotes() {
         this.upVotes++;
     }
 
     /**
-     * @return the downVotes
+     * @return the number of downvotes of this answer
      */
     public Integer getDownVotes() {
         return downVotes;
@@ -100,7 +116,7 @@ public class Answer extends AbstractContent {
     }
 
     /**
-     * Sum one to downVotes
+     * increase by one the number of downvotes of this answer
      */
     public void addDownVotes() {
         this.downVotes++;

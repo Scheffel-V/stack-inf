@@ -21,13 +21,31 @@ public class Question extends AbstractContent {
     private Status        status;
 
     /**
-     * New Question Constructor
+     * creates a empty question
+     */
+    public Question() {
+        super();
+        this.title = null;
+        this.tags = null;
+        this.answers = null;
+        this.comments = null;
+        this.bestAnswer = null;
+        this.status = null;
+    }
+
+    /**
+     * creates a new question
      * 
-     * @param id
-     * @param author
      * @param text
-     * @param title
+     *            the question text
      * @param tags
+     *            the tags of the question
+     * @param title
+     *            the title of the question
+     * @param author
+     *            the author of the question
+     * @param id
+     *            the id of the question
      */
     public Question(Integer id, User author, String text, String title, List<String> tags) {
         super(id, author, text);
@@ -40,37 +58,43 @@ public class Question extends AbstractContent {
     }
 
     /**
-     * @return the title
+     * @return the question title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * @param title
-     *            the title to set
+     * set a new title of the question
+     * 
+     * @param newTitle
+     *            the new title of the question
      */
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String newTitle) {
+        this.title = newTitle;
     }
 
     /**
-     * @return the tags
+     * @return return a list with all tags of the question
      */
     public List<String> getTags() {
         return tags;
     }
 
     /**
+     * set a new tag list for the question
+     * 
      * @param tags
-     *            the tags to set
+     *            the new tag list
      */
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
     /**
-     * @return the answers
+     * return the answers of the question
+     * 
+     * @return a list with all answer of the question
      */
     public List<Answer> getAnswers() {
         return answers;
@@ -85,23 +109,29 @@ public class Question extends AbstractContent {
     }
 
     /**
+     * adds a new answer to the question
+     * 
      * @param answer
-     *            the answer to be added.
+     *            the answer that will be add to the question
      */
     public void addAnswer(Answer answer) {
         this.answers.add(answer);
     }
 
     /**
+     * deletes a answer of a question
+     * 
      * @param answer
-     *            the answer to be deleted.
+     *            the answer that will be deleted
      */
     public void delAnswer(Answer answer) {
         this.answers.remove(answer);
     }
 
     /**
-     * @return the comments
+     * return all the comments of the question
+     * 
+     * @return a list with all the comments of the question
      */
     public List<Comment> getComments() {
         return comments;
@@ -116,60 +146,75 @@ public class Question extends AbstractContent {
     }
 
     /**
+     * adds a comment to the question
+     * 
      * @param comment
-     *            the comment to added
+     *            the comment that will be add to the question
      */
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
 
     /**
+     * deletes a comment of a question
+     * 
      * @param comment
-     *            the comment to deleted
+     *            the comment that will be deleted
      */
     public void delComment(Comment comment) {
         this.comments.remove(comment);
     }
 
     /**
-     * @return the bestAnswer
+     * get the best answer of the question
+     * 
+     * @return the best answer of the question
      */
     public Answer getBestAnswer() {
         return bestAnswer;
     }
 
     /**
+     * set a best answer to the question
+     * 
      * @param bestAnswer
-     *            the bestAnswer to set
+     *            the answer that will turn into the best answer
      */
     public void setBestAnswer(Answer bestAnswer) {
         this.bestAnswer = bestAnswer;
     }
 
     /**
-     * @return the status
+     * the status of question
+     * 
+     * @return OPEN, if the question is open for answer, or CLOSED if it's
+     *         closed for answer
      */
     public Status getStatus() {
         return status;
     }
 
     /**
+     * set a status to the question
+     * 
      * @param status
-     *            the status to set
+     *            the new status of the question
      */
     public void setStatus(Status status) {
         this.status = status;
     }
 
     /**
-     * Change the Status to OPEN.
+     * set the question's status for OPEN, so it's possible to answer this
+     * question
      */
     public void openQuestion() {
         this.status = Status.OPEN;
     }
 
     /**
-     * Change the Status to CLOSE.
+     * set the question's status for CLOSED, so it's not possible to answer this
+     * question
      */
     public void closeQuestion() {
         this.status = Status.CLOSED;

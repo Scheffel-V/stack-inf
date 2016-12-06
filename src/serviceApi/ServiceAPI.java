@@ -106,6 +106,8 @@ public interface ServiceAPI {
      *            answer's text
      * @param questionID
      *            id of the question that will be answered
+     * @throws ContentsException,
+     *             in case the question is closed, throws ContentsException
      */
     public abstract void newAnswer(String text, Integer questionID) throws ContentsException;
 
@@ -116,6 +118,9 @@ public interface ServiceAPI {
      *            text of comment
      * @param content
      *            question or answer that will be commented
+     * @throws ContentsException
+     *             in case the user try to comment something that isn't a
+     *             question or a answer, throws ContentsException
      */
     public abstract void newComment(String text, AbstractContent content) throws ContentsException;
 
@@ -124,6 +129,9 @@ public interface ServiceAPI {
      * 
      * @param content
      *            the edited content
+     * @throws ContentsException
+     *             in case the user who tries to edit isn't admin or the author
+     *             of the content, throws ContentsException
      */
     public abstract void editContent(AbstractContent content) throws ContentsException;
 
@@ -131,7 +139,10 @@ public interface ServiceAPI {
      * Delete a content
      * 
      * @param content
-     *            that will be deleteds
+     *            that will be deleted
+     * @throws ContentsException
+     *             in case the user who tries to delete isn't admin or the
+     *             author of the content, throws ContentsException
      */
     public abstract void deleteContent(AbstractContent content) throws ContentsException;
 
@@ -167,6 +178,9 @@ public interface ServiceAPI {
      *            the id of the question that will receive a best answer
      * @param answerID
      *            the answer's id that will be set as best answer
+     * @throws ContentsException
+     *             in case the user who wants to select the best answer isn't
+     *             the author of the question, throws ContentsException
      */
     public abstract void bestAnswer(Integer questionID, Integer answerID) throws ContentsException;
 
@@ -175,6 +189,9 @@ public interface ServiceAPI {
      * 
      * @param questionID
      *            the id of the question that will be closed
+     * @throws ContentsException
+     *             in case the user who tries to close the question isn't at
+     *             least a admin, throws ContentsException
      */
     public abstract void closeQuestion(Integer questionID) throws ContentsException;
 
@@ -183,6 +200,9 @@ public interface ServiceAPI {
      * 
      * @param questionID
      *            the id of the question that will be opened
+     * @throws ContentsException
+     *             in case the user who tries to open the question isn't at
+     *             least a admin, throws ContentsException
      */
     public abstract void openQuestion(Integer questionID) throws ContentsException;
 

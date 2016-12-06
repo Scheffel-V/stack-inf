@@ -204,7 +204,6 @@ public class Session implements ServiceAPI {
         User user = this.getLoggedUser();
 
         this.contentsController.deleteContent(user, content);
-
     }
 
     /**
@@ -240,7 +239,6 @@ public class Session implements ServiceAPI {
     public void bestAnswer(Integer questionID, Integer answerID) throws ContentsException {
         User user = this.getLoggedUser();
         this.contentsController.bestAnswer(user, questionID, answerID);
-
     }
 
     /**
@@ -250,7 +248,6 @@ public class Session implements ServiceAPI {
     public void closeQuestion(Integer questionID) throws ContentsException {
         User user = this.getLoggedUser();
         this.contentsController.closeQuestion(user, questionID);
-
     }
 
     /**
@@ -266,14 +263,24 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#upVoteAnswer(java.lang.Integer)
      */
     public void upVoteAnswer(Integer answerID) {
-        this.contentsController.upVoteAnswer(answerID);
+        User user = this.getLoggedUser();
+
+        if (user != null) {
+            this.contentsController.upVoteAnswer(answerID);
+        }
+
     }
 
     /**
      * @see serviceApi.ServiceAPI#downVoteAnswer(java.lang.Integer)
      */
     public void downVoteAnswer(Integer answerID) {
-        this.contentsController.downVoteAnswer(answerID);
+        User user = this.getLoggedUser();
+
+        if (user != null) {
+            this.contentsController.downVoteAnswer(answerID);
+        }
+
     }
 
 }
