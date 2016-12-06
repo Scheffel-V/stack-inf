@@ -12,14 +12,24 @@ import javax.persistence.Entity;
 public class Comment extends AbstractContent {
 
     /**
-     * New Comment Construct
-     * 
-     * @param id
-     * @param author
-     * @param text
+     * creates a empty comment
      */
-    public Comment(Integer id, User author, String text) {
-        super(id, author, text);
+    public Comment() {
+        super();
+    }
+
+    /**
+     * creates a new comment
+     * 
+     * @param text
+     *            the text of the comment
+     * @param author
+     *            the author of the comment
+     * @param commentID
+     *            the id of the comment
+     */
+    public Comment(Integer commentID, User author, String text) {
+        super(commentID, author, text);
     }
 
 }
