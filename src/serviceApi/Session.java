@@ -3,14 +3,16 @@ package serviceApi;
 import java.util.List;
 
 import domain.AbstractContent;
+import domain.Answer;
 import domain.Permission;
 import domain.Question;
 import domain.User;
+import utils.ContentsException;
 import utils.UserException;
 
 /**
  * @author lmrodrigues
- * 
+ * @author flmachado
  */
 
 public class Session implements ServiceAPI {
@@ -88,7 +90,7 @@ public class Session implements ServiceAPI {
     }
 
     /**
-     * @throws UserException 
+     * @throws UserException
      * @see serviceApi.ServiceAPI#login(java.lang.String, java.lang.String)
      */
     public void login(String username, String password) throws UserException {
@@ -147,39 +149,62 @@ public class Session implements ServiceAPI {
      * 
      */
     public void newQuestion(String text, List<String> tags, String title) {
+        User author = this.getLoggedUser();
+        this.contentsController.newQuestion(author, text, tags, title);
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#newAnswer(java.lang.String, java.lang.Integer)
      * 
      * 
      */
-    public void newAnswer(String text, Integer questionID) {
+    public void newAnswer(String text, Integer questionID) throws ContentsException {
+        User author = this.getLoggedUser();
+        this.contentsController.newAnswer(author, text, questionID);
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#newComment(java.lang.String,
      *      domain.AbstractContent)
      * 
      * 
      */
-    public void newComment(String text, AbstractContent content) {
+    public void newComment(String text, AbstractContent content) throws ContentsException {
+        User author = this.getLoggedUser();
+
+        if (content instanceof Question)
+            this.contentsController.newComment(author, text, (Question) content);
+        else if (content instanceof Answer) {
+            this.contentsController.newComment(author, text, (Answer) content);
+        } else {
+            throw new ContentsException("content.not.able.to.comment");
+        }
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#editContent(domain.AbstractContent)
      */
-    public void editContent(AbstractContent content) {
+    public void editContent(AbstractContent content) throws ContentsException {
+        User user = this.getLoggedUser();
+
+        this.contentsController.editContent(user, content);
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#deleteContent(domain.AbstractContent)
      */
-    public void deleteContent(AbstractContent content) {
+    public void deleteContent(AbstractContent content) throws ContentsException {
+        User user = this.getLoggedUser();
+
+        this.contentsController.deleteContent(user, content);
 
     }
 
@@ -187,7 +212,7 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#selectQuestion(java.lang.Integer)
      */
     public Question selectQuestion(Integer questionID) {
-        return null;
+        return this.contentsController.selectQuestion(questionID);
     }
 
     /**
@@ -196,7 +221,7 @@ public class Session implements ServiceAPI {
      * 
      */
     public List<Question> searchQuestion(String query) {
-        return null;
+        return this.contentsController.searchQuestion(query);
     }
 
     /**
@@ -205,43 +230,51 @@ public class Session implements ServiceAPI {
      * 
      */
     public List<Question> listAllQuestions() {
-        return null;
+        return this.contentsController.listAllQuestions();
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#bestAnswer(java.lang.Integer,
      *      java.lang.Integer)
      */
-    public void bestAnswer(Integer questionID, Integer answerID) {
+    public void bestAnswer(Integer questionID, Integer answerID) throws ContentsException {
+        User user = this.getLoggedUser();
+        this.contentsController.bestAnswer(user, questionID, answerID);
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#closeQuestion(java.lang.Integer)
      */
-    public void closeQuestion(Integer questionID) {
+    public void closeQuestion(Integer questionID) throws ContentsException {
+        User user = this.getLoggedUser();
+        this.contentsController.closeQuestion(user, questionID);
 
     }
 
     /**
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#openQuestion(java.lang.Integer)
      */
-    public void openQuestion(Integer questionID) {
-
+    public void openQuestion(Integer questionID) throws ContentsException {
+        User user = this.getLoggedUser();
+        this.contentsController.openQuestion(user, questionID);
     }
 
     /**
      * @see serviceApi.ServiceAPI#upVoteAnswer(java.lang.Integer)
      */
     public void upVoteAnswer(Integer answerID) {
-
+        this.contentsController.upVoteAnswer(answerID);
     }
 
     /**
      * @see serviceApi.ServiceAPI#downVoteAnswer(java.lang.Integer)
      */
     public void downVoteAnswer(Integer answerID) {
-
+        this.contentsController.downVoteAnswer(answerID);
     }
 
 }

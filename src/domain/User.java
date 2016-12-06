@@ -30,23 +30,8 @@ public class User {
     private List<Comment>  userComments;
 
     /**
-     * Default constructor to User Class, set all attributes to null.
-     */
-    public User() {
-        this.username = null;
-        this.password = null;
-        this.email = null;
-        this.name = null;
-        this.userPermission = null;
-        this.blockStatus = null;
-        this.userAnswers = null;
-        this.userQuestions = null;
-        this.userComments = null;
-    }
-
-    /**
      * 
-     * TODO WRITE DOCUMENTATION TO THIS METHOD
+     * New User constructor method
      * 
      * @param username
      * @param password
@@ -192,6 +177,22 @@ public class User {
     }
 
     /**
+     * @param question
+     *            the question to be added.
+     */
+    public void addQuestion(Question question) {
+        this.userQuestions.add(question);
+    }
+
+    /**
+     * @param question
+     *            the question to be deleted.
+     */
+    public void delQuestion(Question question) {
+        this.userQuestions.remove(question);
+    }
+
+    /**
      * @return the userAnswers
      */
     public List<Answer> getUserAnswers() {
@@ -207,6 +208,22 @@ public class User {
     }
 
     /**
+     * @param answer
+     *            the answer to be added.
+     */
+    public void addAnswer(Answer answer) {
+        this.userAnswers.add(answer);
+    }
+
+    /**
+     * @param answer
+     *            the answer to be deleted.
+     */
+    public void delAnswer(Answer answer) {
+        this.userAnswers.remove(answer);
+    }
+
+    /**
      * @return the userComments
      */
     public List<Comment> getUserComments() {
@@ -219,6 +236,22 @@ public class User {
      */
     public void setUserComments(List<Comment> userComments) {
         this.userComments = userComments;
+    }
+
+    /**
+     * @param comment
+     *            the comment to be added.
+     */
+    public void addComment(Comment comment) {
+        this.userComments.add(comment);
+    }
+
+    /**
+     * @param comment
+     *            the comment to be deleted.
+     */
+    public void delComments(Comment comment) {
+        this.userComments.remove(comment);
     }
 
 }
