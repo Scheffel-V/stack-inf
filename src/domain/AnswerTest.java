@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +20,16 @@ import org.junit.Test;
 public class AnswerTest {
 
     ArrayList<Answer>  answers;
-    User               user;
     ArrayList<Comment> comments;
+
+    User               user     = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
+
+    Comment            comment0 = new Comment(2, user, "Comment Text");
+    Comment            comment1 = new Comment(3, user, "Comment Text Two");
+    Comment            comment2 = new Comment(4, user, "Test Text");
+
+    Answer             answer0  = new Answer();
+    Answer             answer1  = new Answer(1, user, "Text");
 
     /**
      * @throws java.lang.Exception
@@ -28,14 +37,14 @@ public class AnswerTest {
     @Before
     public void setUp() throws Exception {
 
-        user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
         comments = new ArrayList<Comment>();
-        comments.add(new Comment(2, user, "Comment Text"));
-        comments.add(new Comment(3, user, "Comment Text Two"));
-        comments.add(new Comment(4, user, "Test Text"));
+        comments.add(comment0);
+        comments.add(comment1);
+        comments.add(comment2);
+
         answers = new ArrayList<Answer>();
-        answers.add(new Answer()); // 0 - Null Answer.
-        answers.add(new Answer(1, user, "Text")); // 1 - Answer with arguments.
+        answers.add(answer0); // 0 - Null Answer.
+        answers.add(answer1); // 1 - Answer with arguments.
     }
 
     /**
@@ -55,6 +64,107 @@ public class AnswerTest {
         assertTrue("Problem in author field of Answer construct.",
                 answers.get(1).getAuthor().getUsername() == "Vinicius");
         assertTrue("Problem in text field of Answer construct.", answers.get(1).getText() == "Text");
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getId()}. This test will check the
+     * getId method.
+     */
+    @Test
+    public final void testGetId() {
+
+        assertTrue("Problem in getId of Answer construct.", answers.get(0).getId() == null);
+        assertTrue("Problem in getId of Answer construct.", answers.get(1).getId() == 1);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setId()}. This test will check the
+     * setId method.
+     */
+    @Test
+    public final void testSetId() {
+
+        answers.get(1).setId(2);
+        assertTrue("Problem in setId of Answer construct.", answers.get(1).getId() == 2);
+        answers.get(1).setId(3);
+        assertTrue("Problem in setId of Answer construct.", answers.get(1).getId() == 3);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getDate()}. This test will check the
+     * getDate method.
+     */
+    @Test
+    public final void testGetDate() {
+        Date date = new Date();
+        answers.get(1).setDate(date);
+        assertTrue("Problem in getDate of Answer construct.", answers.get(1).getDate() == date);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setDate()}. This test will check the
+     * setDate method.
+     */
+    @Test
+    public final void testSetDate() {
+        Date date_1 = new Date();
+        Date date_2 = new Date();
+        answers.get(1).setDate(date_1);
+        assertTrue("Problem in setDate of Answer construct.", answers.get(1).getDate() == date_1);
+        answers.get(1).setDate(date_2);
+        assertTrue("Problem in setDate of Answer construct.", answers.get(1).getDate() == date_2);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setAuthor()}. This test will check
+     * the setAuthor method.
+     */
+    @Test
+    public final void testSetAuthor() {
+
+        answers.get(1).setAuthor(user);
+        assertTrue("Problem in setAuthor of Answer construct.", answers.get(1).getAuthor() == user);
+        User user_1 = new User();
+        answers.get(1).setAuthor(user_1);
+        assertTrue("Problem in setAuthor of Answer construct.", answers.get(1).getAuthor() == user_1);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getAuthor()}. This test will check
+     * the getAuthor method.
+     */
+    @Test
+    public final void testGetAuthor() {
+
+        assertTrue("Problem in getAuthor of Answer construct.", answers.get(1).getAuthor() == user);
+        User user_1 = new User();
+        answers.get(1).setAuthor(user_1);
+        assertTrue("Problem in getAuthor of Answer construct.", answers.get(1).getAuthor() == user_1);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getText()}. This test will check the
+     * getText method.
+     */
+    @Test
+    public final void testGetText() {
+
+        assertTrue("Problem in getText of Answer construct.", answers.get(1).getText() == "Text");
+        answers.get(1).setText("Text Test");
+        assertTrue("Problem in getText of Answer construct.", answers.get(1).getText() == "Text Test");
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setText()}. This test will check the
+     * setText method.
+     */
+    @Test
+    public final void testSetText() {
+
+        answers.get(1).setText("Text");
+        assertTrue("Problem in setText of Answer construct.", answers.get(1).getText() == "Text");
+        answers.get(1).setText("Text Test");
+        assertTrue("Problem in setText of Answer construct.", answers.get(1).getText() == "Text Test");
     }
 
     /**
@@ -79,12 +189,16 @@ public class AnswerTest {
         answers.get(1).setComments(comments);
         assertTrue("Problem in setComments.", answers.get(1).getComments().get(0).getId() == 2);
         assertTrue("Problem in setComments.", answers.get(1).getComments().get(1).getId() == 3);
-        answers.get(1).delComment(comments.get(0));
-        answers.get(1).delComment(comments.get(1));
+        answers.get(1).delComment(comment0);
+        answers.get(1).delComment(comment1);
+        answers.get(1).delComment(comment2);
+        comments.add(comment0);
+        comments.add(comment1);
+        comments.add(comment2);
         answers.get(1).setComments(comments);
         assertTrue("Problem in setComments.", answers.get(1).getComments().get(0).getId() == 2);
         answers.get(1).setComments(null);
-        assertTrue("Problem in setComments.", answers.get(1).getComments().isEmpty() == true);
+        assertTrue("Problem in setComments.", answers.get(1).getComments() == null);
     }
 
     /**
@@ -116,13 +230,13 @@ public class AnswerTest {
     @Test
     public final void testDelComment() {
         answers.get(1).setComments(comments);
-        answers.get(1).delComment(comments.get(0));
+        answers.get(1).delComment(comment0);
         assertTrue("Problem in delComment.", answers.get(1).getComments().get(0).getId() == 3);
         assertTrue("Problem in delComment.", answers.get(1).getComments().get(1).getId() == 4);
-        answers.get(1).delComment(comments.get(1));
-        answers.get(1).delComment(comments.get(2));
+        answers.get(1).delComment(comment1);
+        answers.get(1).delComment(comment2);
         assertTrue("Problem in delComment.", answers.get(1).getComments().isEmpty() == true);
-        answers.get(1).delComment(comments.get(2));
+        answers.get(1).delComment(comment2);
         assertTrue("Problem in delComment.", answers.get(1).getComments().isEmpty() == true);
     }
 

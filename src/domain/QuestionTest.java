@@ -10,6 +10,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -102,6 +103,107 @@ public class QuestionTest {
         assertNull("bestAnswer field of construct with arguments is not null.", questionList.get(1).getBestAnswer());
         assertSame("Problem in status field from construct with arguments.", Status.OPEN,
                 questionList.get(1).getStatus());
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getId()}. This test will check the
+     * getId method.
+     */
+    @Test
+    public final void testGetId() {
+
+        assertTrue("Problem in getId of Answer construct.", questionList.get(0).getId() == null);
+        assertTrue("Problem in getId of Answer construct.", questionList.get(1).getId() == 1);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setId()}. This test will check the
+     * setId method.
+     */
+    @Test
+    public final void testSetId() {
+
+        questionList.get(1).setId(2);
+        assertTrue("Problem in setId of Answer construct.", questionList.get(1).getId() == 2);
+        questionList.get(1).setId(3);
+        assertTrue("Problem in setId of Answer construct.", questionList.get(1).getId() == 3);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getDate()}. This test will check the
+     * getDate method.
+     */
+    @Test
+    public final void testGetDate() {
+        Date date = new Date();
+        questionList.get(1).setDate(date);
+        assertTrue("Problem in getDate of Answer construct.", questionList.get(1).getDate() == date);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setDate()}. This test will check the
+     * setDate method.
+     */
+    @Test
+    public final void testSetDate() {
+        Date date_1 = new Date();
+        Date date_2 = new Date();
+        questionList.get(1).setDate(date_1);
+        assertTrue("Problem in setDate of Answer construct.", questionList.get(1).getDate() == date_1);
+        questionList.get(1).setDate(date_2);
+        assertTrue("Problem in setDate of Answer construct.", questionList.get(1).getDate() == date_2);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setAuthor()}. This test will check
+     * the setAuthor method.
+     */
+    @Test
+    public final void testSetAuthor() {
+
+        questionList.get(1).setAuthor(vinicius);
+        assertTrue("Problem in setAuthor of Answer construct.", questionList.get(1).getAuthor() == vinicius);
+        User user_1 = new User();
+        questionList.get(1).setAuthor(user_1);
+        assertTrue("Problem in setAuthor of Answer construct.", questionList.get(1).getAuthor() == user_1);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getAuthor()}. This test will check
+     * the getAuthor method.
+     */
+    @Test
+    public final void testGetAuthor() {
+
+        assertTrue("Problem in getAuthor of Answer construct.", questionList.get(1).getAuthor() == vinicius);
+        User user_1 = new User();
+        questionList.get(1).setAuthor(user_1);
+        assertTrue("Problem in getAuthor of Answer construct.", questionList.get(1).getAuthor() == user_1);
+    }
+
+    /**
+     * Test method for {@link domain.Answer#getText()}. This test will check the
+     * getText method.
+     */
+    @Test
+    public final void testGetText() {
+
+        assertTrue("Problem in getText of Answer construct.", questionList.get(1).getText() == "Text");
+        questionList.get(1).setText("Text Test");
+        assertTrue("Problem in getText of Answer construct.", questionList.get(1).getText() == "Text Test");
+    }
+
+    /**
+     * Test method for {@link domain.Answer#setText()}. This test will check the
+     * setText method.
+     */
+    @Test
+    public final void testSetText() {
+
+        questionList.get(1).setText("Text");
+        assertTrue("Problem in setText of Answer construct.", questionList.get(1).getText() == "Text");
+        questionList.get(1).setText("Text Test");
+        assertTrue("Problem in setText of Answer construct.", questionList.get(1).getText() == "Text Test");
     }
 
     /**
