@@ -22,7 +22,6 @@ import org.junit.Test;
  */
 public class QuestionTest {
 
-    Question            question;
     ArrayList<Question> questionList;
     List<String>        tags;
     User                vinicius, sujeito;
@@ -91,6 +90,7 @@ public class QuestionTest {
     @Test
     public final void testQuestionWithArguments() {
         assertNotNull("Question constructor with arguments gives null object.", questionList.get(1));
+        assertTrue("Problem in ID field of construct with arguments.", questionList.get(1).getId() == 1);
         assertTrue("Problem in author field of construct with arguments.", questionList.get(1).getAuthor() == vinicius);
         assertTrue("Problem in text field of construct with arguments.", questionList.get(1).getText() == "Text");
         assertTrue("Problem in title field of construct with arguments.", questionList.get(1).getTitle() == "Title");
@@ -120,7 +120,7 @@ public class QuestionTest {
      */
     @Test
     public final void testSetTitle() {
-        questionList.get(0).setTitle("Test Title");
+        questionList.get(1).setTitle("Test Title");
         assertTrue("Probme in setTitle.", questionList.get(1).getTitle() == "Test Title");
     }
 
@@ -169,7 +169,7 @@ public class QuestionTest {
         assertTrue("Problem in setAnswers.", questionList.get(1).getAnswers().get(0).getId() == 10);
         assertTrue("Problem in setAnswers.", questionList.get(1).getAnswers().get(1).getId() == 12);
         questionList.get(1).setAnswers(null);
-        assertTrue("Problem in setAnswers.", questionList.get(1).getAnswers().get(0).getId() == null);
+        assertTrue("Problem in setAnswers.", questionList.get(1).getAnswers() == null);
     }
 
     /**
@@ -226,7 +226,7 @@ public class QuestionTest {
         assertTrue("Problem in setComments.", questionList.get(1).getComments().get(0).getId() == 11);
         assertTrue("Problem in setComments.", questionList.get(1).getComments().get(1).getId() == 13);
         questionList.get(1).setComments(null);
-        assertTrue("Problem in setComments.", questionList.get(1).getComments().get(0).getId() == null);
+        assertTrue("Problem in setComments.", questionList.get(1).getComments() == null);
     }
 
     /**
