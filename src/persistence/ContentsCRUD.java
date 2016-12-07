@@ -40,12 +40,20 @@ public class ContentsCRUD extends AbstractCRUD {
      * 
      * @param newContent
      *            the content to be created
+     * @throws ContentsException
      */
-    public void create(AbstractContent newContent) {
+    public void create(AbstractContent newContent) throws ContentsException {
         beginTransaction();
         getEntityManager().persist(newContent);
-        commitTransaction();
-
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new ContentsException("invalid.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
     }
 
     /**
@@ -124,8 +132,6 @@ public class ContentsCRUD extends AbstractCRUD {
     }
 
     /**
-     * TODO SPLIT THIS METHOD TO AVOID CASTS
-     * 
      * Update an Content on Database
      * 
      * @param content
@@ -135,7 +141,15 @@ public class ContentsCRUD extends AbstractCRUD {
     public void update(AbstractContent content) throws ContentsException {
         beginTransaction();
         AbstractContent newContent = getEntityManager().merge(content);
-        commitTransaction();
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new ContentsException("invalid.content");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
         if (newContent == null) {
             throw new ContentsException(content.getClass().toString() + ".not.exists");
@@ -157,7 +171,15 @@ public class ContentsCRUD extends AbstractCRUD {
         Question toDelete = readQuestion(question.getId());
         getEntityManager().remove(toDelete);
 
-        commitTransaction();
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new ContentsException("invalid.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -175,7 +197,15 @@ public class ContentsCRUD extends AbstractCRUD {
         Answer toDelete = readAnswer(answer.getId());
         getEntityManager().remove(toDelete);
 
-        commitTransaction();
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new ContentsException("invalid.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -193,7 +223,15 @@ public class ContentsCRUD extends AbstractCRUD {
         Comment toDelete = readComment(content.getId());
         getEntityManager().remove(toDelete);
 
-        commitTransaction();
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new ContentsException("invalid.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -215,9 +253,29 @@ public class ContentsCRUD extends AbstractCRUD {
     /**
      * @return All questions saved on the Database
      */
-    public List<Question> listAllQuestion() {
+    public List<Question> listAllQuestions() {
         TypedQuery<Question> query =
                 getEntityManager().createQuery("SELECT q FROM Question q", Question.class);
+
+        return query.getResultList();
+    }
+
+    /**
+     * @return All answers saved on the Database
+     */
+    public List<Answer> listAllAnswers() {
+        TypedQuery<Answer> query =
+                getEntityManager().createQuery("SELECT a FROM Answer a", Answer.class);
+
+        return query.getResultList();
+    }
+
+    /**
+     * @return All comments saved on the Database
+     */
+    public List<Comment> listAllComments() {
+        TypedQuery<Comment> query =
+                getEntityManager().createQuery("SELECT c FROM Comment c", Comment.class);
 
         return query.getResultList();
     }
@@ -229,7 +287,11 @@ public class ContentsCRUD extends AbstractCRUD {
         TypedQuery<Long> query =
                 getEntityManager().createQuery("SELECT MAX(q.id) FROM Question q", Long.class);
 
-        return query.getSingleResult();
+        if (query.getSingleResult() == null) {
+            return (long) 0;
+        } else {
+            return query.getSingleResult();
+        }
     }
 
     /**
@@ -239,7 +301,11 @@ public class ContentsCRUD extends AbstractCRUD {
         TypedQuery<Long> query =
                 getEntityManager().createQuery("SELECT MAX(a.id) FROM Answer a", Long.class);
 
-        return query.getSingleResult();
+        if (query.getSingleResult() == null) {
+            return (long) 0;
+        } else {
+            return query.getSingleResult();
+        }
     }
 
     /**
@@ -249,7 +315,11 @@ public class ContentsCRUD extends AbstractCRUD {
         TypedQuery<Long> query =
                 getEntityManager().createQuery("SELECT MAX(c.id) FROM Comment c", Long.class);
 
-        return query.getSingleResult();
+        if (query.getSingleResult() == null) {
+            return (long) 0;
+        } else {
+            return query.getSingleResult();
+        }
     }
 
 }

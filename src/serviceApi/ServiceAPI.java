@@ -99,9 +99,10 @@ public interface ServiceAPI {
      *            question's title
      * @throws UserException
      *             if logged user not exists on database
+     * @throws ContentsException
      */
     public abstract void newQuestion(String text, List<String> tags, String title)
-            throws UserException;
+            throws UserException, ContentsException;
 
     /**
      * Insert a new answer to a question on database

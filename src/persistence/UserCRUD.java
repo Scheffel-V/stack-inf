@@ -41,11 +41,21 @@ public class UserCRUD extends AbstractCRUD {
      * 
      * @param newUser
      *            the user to be created
+     * @throws UserException
      */
-    public void create(User newUser) {
+    public void create(User newUser) throws UserException {
         beginTransaction();
         getEntityManager().persist(newUser);
-        commitTransaction();
+
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new UserException("invalid.username.or.email");
+            } else {
+                throw new UserException("unexpected.error", e);
+            }
+        }
     }
 
     /**
@@ -77,8 +87,15 @@ public class UserCRUD extends AbstractCRUD {
     public void update(User user) throws UserException {
         beginTransaction();
         User returnUser = getEntityManager().merge(user);
-        commitTransaction();
-
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new UserException("invalid.username.or.email");
+            } else {
+                throw new UserException("unexpected.error", e);
+            }
+        }
         if (returnUser == null) {
             throw new UserException("user.not.exists");
         }
@@ -97,7 +114,15 @@ public class UserCRUD extends AbstractCRUD {
 
         beginTransaction();
         getEntityManager().remove(toDelete);
-        commitTransaction();
+        try {
+            commitTransaction();
+        } catch (Exception e) {
+            if (e.getMessage() == "duplicated.key") {
+                throw new UserException("invalid.username.or.email");
+            } else {
+                throw new UserException("unexpected.error", e);
+            }
+        }
     }
 
     /**

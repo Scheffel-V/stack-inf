@@ -1,5 +1,8 @@
 package persistence;
 
+import org.eclipse.persistence.exceptions.DatabaseException;
+import org.postgresql.util.PSQLException;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 
@@ -47,9 +50,31 @@ public abstract class AbstractCRUD {
 
     /**
      * Send a message to the Entity Manager to close a Transaction with DataBase
+     * 
+     * @throws Exception
      */
-    protected void commitTransaction() {
-        getEntityManager().getTransaction().commit();
+    protected void commitTransaction() throws Exception {
+        try {
+            getEntityManager().getTransaction().commit();
+        } catch (Exception e) {
+            if (e.getCause() instanceof DatabaseException) {
+                Throwable dbException = e.getCause();
+
+                if (dbException.getCause() instanceof PSQLException) {
+                    PSQLException psqlException = (PSQLException) dbException.getCause();
+
+                    if (psqlException.getMessage().contains("duplicate key")) {
+                        throw new Exception("duplicated.key", e);
+                    } else {
+                        throw e;
+                    }
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
+        }
     }
 
 }

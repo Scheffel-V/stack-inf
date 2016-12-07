@@ -25,11 +25,20 @@ public class ContentsController {
     private ContentsCRUD contentCRUD;
 
     /**
-     * Create a new database for the API.
+     * Create a new Contents controller for the API.
      */
     public ContentsController() {
         this.userCRUD = new UserCRUD();
         this.contentCRUD = new ContentsCRUD();
+    }
+
+    /**
+     * Create a new Contents controller for the API. Allow Choose the
+     * persistence unit.
+     */
+    public ContentsController(String persistenceUnit) {
+        this.userCRUD = new UserCRUD(persistenceUnit);
+        this.contentCRUD = new ContentsCRUD(persistenceUnit);
     }
 
     /**
@@ -46,9 +55,10 @@ public class ContentsController {
      * @return The created Question
      * @throws UserException
      *             if user not exists on database
+     * @throws ContentsException
      */
     public Question newQuestion(User logged, String text, List<String> tags, String title)
-            throws UserException {
+            throws UserException, ContentsException {
         Long id = this.contentCRUD.getMaxQuestionId() + 1;
 
         Question newQuestion = new Question(id, logged, text, title, tags);
@@ -253,7 +263,7 @@ public class ContentsController {
      * @return all question on the database
      */
     public List<Question> listAllQuestions() {
-        return this.contentCRUD.listAllQuestion();
+        return this.contentCRUD.listAllQuestions();
     }
 
     /**

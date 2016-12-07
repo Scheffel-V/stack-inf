@@ -36,6 +36,20 @@ public class Session implements ServiceAPI {
     }
 
     /**
+     * 
+     * Create a new session to a non logged user, to log in on system, the user
+     * needs to execute the login method of this class. Allow choose the
+     * persistence unit of the system to test the system.
+     * 
+     */
+    public Session(String persistenceUnit) {
+        this.loggedUser = null;
+        this.userController = new UserController(persistenceUnit);
+        this.contentsController = new ContentsController(persistenceUnit);
+
+    }
+
+    /**
      * @return the loggedUser
      */
     public User getLoggedUser() {
@@ -145,10 +159,12 @@ public class Session implements ServiceAPI {
 
     /**
      * @throws UserException
+     * @throws ContentsException
      * @see serviceApi.ServiceAPI#newQuestion(java.lang.String, domain.,
      *      java.lang.String)
      */
-    public void newQuestion(String text, List<String> tags, String title) throws UserException {
+    public void newQuestion(String text, List<String> tags, String title)
+            throws UserException, ContentsException {
         User author = this.getLoggedUser();
         this.contentsController.newQuestion(author, text, tags, title);
 

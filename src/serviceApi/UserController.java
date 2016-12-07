@@ -15,10 +15,18 @@ public class UserController {
     private UserCRUD userCRUD;
 
     /**
-     * Creates a new database for the API.
+     * Creates a User Controller for the API.
      */
     public UserController() {
         this.userCRUD = new UserCRUD();
+
+    }
+
+    /**
+     * Creates a User Controller for the API. Allow choose the persistence unit
+     */
+    public UserController(String persistenceUnit) {
+        this.userCRUD = new UserCRUD(persistenceUnit);
 
     }
 

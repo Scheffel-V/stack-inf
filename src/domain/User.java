@@ -24,6 +24,7 @@ public class User {
     @Column(name = "USERNAME")
     private String         username;
     private String         password;
+    @Column(unique = true)
     private String         email;
     private String         name;
     private Boolean        blockStatus;

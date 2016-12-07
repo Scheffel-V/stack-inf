@@ -7,15 +7,18 @@ package utils;
 
 public class ContentsException extends Exception {
 
-    private String message;
+    private static final long serialVersionUID = 8666360602455146407L;
 
-    public ContentsException(String message) {
-        this.message = message;
+    public ContentsException() {
+        super();
     }
 
-    @Override
-    public String getMessage() {
-        return this.message;
+    public ContentsException(String message) {
+        super(message);
+    }
+
+    public ContentsException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }
