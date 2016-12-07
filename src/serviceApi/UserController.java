@@ -34,8 +34,8 @@ public class UserController {
      * @param userPermission
      * @throws UserException
      */
-    public void newAccount(String username, String password, String email, String name, Permission userPermission)
-            throws UserException {
+    public void newAccount(String username, String password, String email, String name,
+            Permission userPermission) throws UserException {
 
         if (!userCRUD.isReplicatedUsername(username)) {
             User newUser = new User(username, password, email, name);
@@ -146,7 +146,8 @@ public class UserController {
      * @param newPermission
      * @throws UserException
      */
-    public void changeUserPermission(User logged, String username, Permission newPermission) throws UserException {
+    public void changeUserPermission(User logged, String username, Permission newPermission)
+            throws UserException {
         Boolean isLoggedAdmin = logged.getUserPermission() == Permission.ADMIN;
 
         if (isLoggedAdmin) {
@@ -166,9 +167,11 @@ public class UserController {
      * 
      * @param logged
      * @param newPassword
+     * @throws UserException
+     *             if user not exists on database
      * 
      */
-    public void changeUserPassword(User logged, String newPassword) {
+    public void changeUserPassword(User logged, String newPassword) throws UserException {
         logged.setPassword(newPassword);
         userCRUD.update(logged);
 

@@ -44,8 +44,11 @@ public class ContentsController {
      * @param title
      *            Question's title
      * @return The created Question
+     * @throws UserException
+     *             if user not exists on database
      */
-    public Question newQuestion(User logged, String text, List<String> tags, String title) {
+    public Question newQuestion(User logged, String text, List<String> tags, String title)
+            throws UserException {
         Long id = this.contentCRUD.getMaxQuestionId() + 1;
 
         Question newQuestion = new Question(id, logged, text, title, tags);
@@ -69,9 +72,12 @@ public class ContentsController {
      *            Question'id of the answer
      * @throws ContentsException
      *             in case the Question is closed
+     * @throws UserException
+     *             if user not exists on database
      */
 
-    public void newAnswer(User logged, String text, Long questionID) throws ContentsException {
+    public void newAnswer(User logged, String text, Long questionID)
+            throws ContentsException, UserException {
         Long answerId = this.contentCRUD.getMaxAnswerId() + 1;
         Question question = this.contentCRUD.readQuestion(questionID);
 
@@ -100,8 +106,11 @@ public class ContentsController {
      * @param content
      *            Question that will receive this comment
      * @throws ContentsException
+     * @throws UserException
+     *             if the user not exists on database
      */
-    public void newComment(User logged, String text, Question question) throws ContentsException {
+    public void newComment(User logged, String text, Question question)
+            throws ContentsException, UserException {
         Long commentId = this.contentCRUD.getMaxCommentId() + 1;
         Comment newComment = new Comment(commentId, logged, text);
 
@@ -124,8 +133,11 @@ public class ContentsController {
      * @param answer
      *            Answer that will receive this comment
      * @throws ContentsException
+     * @throws UserException
+     *             if user not exists on database
      */
-    public void newComment(User logged, String text, Answer answer) throws ContentsException {
+    public void newComment(User logged, String text, Answer answer)
+            throws ContentsException, UserException {
         Long commentId = this.contentCRUD.getMaxCommentId() + 1;
         Comment newComment = new Comment(commentId, logged, text);
 

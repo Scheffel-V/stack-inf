@@ -77,7 +77,8 @@ public interface ServiceAPI {
      * @param newPermission
      * @throws UserException
      */
-    public abstract void changeUserPermission(String username, Permission newPermission) throws UserException;
+    public abstract void changeUserPermission(String username, Permission newPermission)
+            throws UserException;
 
     /**
      * Changes user's password
@@ -96,8 +97,11 @@ public interface ServiceAPI {
      *            question's tags
      * @param title
      *            question's title
+     * @throws UserException
+     *             if logged user not exists on database
      */
-    public abstract void newQuestion(String text, List<String> tags, String title);
+    public abstract void newQuestion(String text, List<String> tags, String title)
+            throws UserException;
 
     /**
      * Insert a new answer to a question on database
@@ -108,8 +112,11 @@ public interface ServiceAPI {
      *            id of the question that will be answered
      * @throws ContentsException,
      *             in case the question is closed, throws ContentsException
+     * @throws UserException
+     *             if logged user not exists on database
      */
-    public abstract void newAnswer(String text, Long questionID) throws ContentsException;
+    public abstract void newAnswer(String text, Long questionID)
+            throws ContentsException, UserException;
 
     /**
      * Insert a new comment to a question or answer on database
@@ -121,8 +128,11 @@ public interface ServiceAPI {
      * @throws ContentsException
      *             in case the user try to comment something that isn't a
      *             question or a answer, throws ContentsException
+     * @throws UserException
+     *             if logged user not exists on database
      */
-    public abstract void newComment(String text, AbstractContent content) throws ContentsException;
+    public abstract void newComment(String text, AbstractContent content)
+            throws ContentsException, UserException;
 
     /**
      * Edits a content
