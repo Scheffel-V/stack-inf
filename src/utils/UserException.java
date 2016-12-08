@@ -7,15 +7,17 @@ package utils;
 
 public class UserException extends Exception {
 
-    private String message;
+    private static final long serialVersionUID = 2059533965342636377L;
+
+    public UserException() {
+        super();
+    }
 
     public UserException(String message) {
-        this.message = message;
+        super(message);
     }
 
-    @Override
-    public String getMessage() {
-        return this.message;
+    public UserException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }

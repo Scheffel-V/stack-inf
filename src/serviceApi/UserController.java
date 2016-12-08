@@ -15,10 +15,18 @@ public class UserController {
     private UserCRUD userCRUD;
 
     /**
-     * Creates a new database for the API.
+     * Creates a User Controller for the API.
      */
     public UserController() {
         this.userCRUD = new UserCRUD();
+
+    }
+
+    /**
+     * Creates a User Controller for the API. Allow choose the persistence unit
+     */
+    public UserController(String persistenceUnit) {
+        this.userCRUD = new UserCRUD(persistenceUnit);
 
     }
 
@@ -34,16 +42,19 @@ public class UserController {
      * @param userPermission
      * @throws UserException
      */
-    public void newAccount(String username, String password, String email, String name, Permission userPermission)
-            throws UserException {
+    public void newAccount(String username, String password, String email, String name,
+            Permission userPermission) throws UserException {
 
-        if (!userCRUD.isReplicatedUsername(username)) {
-            User newUser = new User(username, password, email, name);
+        User newUser = new User(username, password, email, name);
+
+        try {
             userCRUD.create(newUser);
-
-        } else {
-            throw new UserException("replicated.username");
-
+        } catch (UserException e) {
+            if (e.getMessage() == "invalid.email.or.username") {
+                throw new UserException("replicated.username");
+            } else {
+                throw new UserException("unexpected.erro", e);
+            }
         }
 
     }
@@ -146,7 +157,8 @@ public class UserController {
      * @param newPermission
      * @throws UserException
      */
-    public void changeUserPermission(User logged, String username, Permission newPermission) throws UserException {
+    public void changeUserPermission(User logged, String username, Permission newPermission)
+            throws UserException {
         Boolean isLoggedAdmin = logged.getUserPermission() == Permission.ADMIN;
 
         if (isLoggedAdmin) {
@@ -166,9 +178,11 @@ public class UserController {
      * 
      * @param logged
      * @param newPassword
+     * @throws UserException
+     *             if user not exists on database
      * 
      */
-    public void changeUserPassword(User logged, String newPassword) {
+    public void changeUserPassword(User logged, String newPassword) throws UserException {
         logged.setPassword(newPassword);
         userCRUD.update(logged);
 

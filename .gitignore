@@ -1,2 +1,3 @@
 /target/
 *.pem
+src/META-INF/persistence.xml

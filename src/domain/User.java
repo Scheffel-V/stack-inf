@@ -1,9 +1,14 @@
 package domain;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * @author lmrodrigues
@@ -12,18 +17,36 @@ import javax.persistence.Id;
  */
 
 @Entity
+@Table(name = "StackUser")
 public class User {
 
     @Id
+    @Column(name = "USERNAME")
     private String         username;
     private String         password;
+    @Column(unique = true)
     private String         email;
     private String         name;
     private Boolean        blockStatus;
     private Permission     userPermission;
+    @OneToMany(orphanRemoval = true)
     private List<Question> userQuestions;
+    @OneToMany(orphanRemoval = true)
     private List<Answer>   userAnswers;
+    @OneToMany(orphanRemoval = true)
     private List<Comment>  userComments;
+
+    public User() {
+        this.username = null;
+        this.password = null;
+        this.email = null;
+        this.name = null;
+        this.blockStatus = null;
+        this.userPermission = null;
+        this.userQuestions = null;
+        this.userAnswers = null;
+        this.userComments = null;
+    }
 
     /**
      * 
@@ -41,9 +64,9 @@ public class User {
         this.name = name;
         this.userPermission = Permission.COMMON;
         this.blockStatus = false;
-        this.userAnswers = null;
-        this.userQuestions = null;
-        this.userComments = null;
+        this.userAnswers = new ArrayList<Answer>();
+        this.userQuestions = new ArrayList<Question>();
+        this.userComments = new ArrayList<Comment>();
     }
 
     /**
@@ -185,7 +208,15 @@ public class User {
      *            the question to be deleted.
      */
     public void delQuestion(Question question) {
-        this.userQuestions.remove(question);
+        if (question != null) {
+            Iterator<Question> iter = userQuestions.iterator();
+            while (iter.hasNext()) {
+                Question toRemove = iter.next();
+                if (toRemove.getId() == question.getId()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -216,7 +247,15 @@ public class User {
      *            the answer to be deleted.
      */
     public void delAnswer(Answer answer) {
-        this.userAnswers.remove(answer);
+        if (answer != null) {
+            Iterator<Answer> iter = userAnswers.iterator();
+            while (iter.hasNext()) {
+                Answer toRemove = iter.next();
+                if (toRemove.getId() == answer.getId()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -246,8 +285,16 @@ public class User {
      * @param comment
      *            the comment to be deleted.
      */
-    public void delComments(Comment comment) {
-        this.userComments.remove(comment);
+    public void delComment(Comment comment) {
+        if (comment != null) {
+            Iterator<Comment> iter = userComments.iterator();
+            while (iter.hasNext()) {
+                Comment toRemove = iter.next();
+                if (toRemove.getId() == comment.getId()) {
+                    iter.remove();
+                }
+            }
+        }
     }
 
 }

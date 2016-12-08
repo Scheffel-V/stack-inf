@@ -77,7 +77,8 @@ public interface ServiceAPI {
      * @param newPermission
      * @throws UserException
      */
-    public abstract void changeUserPermission(String username, Permission newPermission) throws UserException;
+    public abstract void changeUserPermission(String username, Permission newPermission)
+            throws UserException;
 
     /**
      * Changes user's password
@@ -96,8 +97,12 @@ public interface ServiceAPI {
      *            question's tags
      * @param title
      *            question's title
+     * @throws UserException
+     *             if logged user not exists on database
+     * @throws ContentsException
      */
-    public abstract void newQuestion(String text, List<String> tags, String title);
+    public abstract void newQuestion(String text, List<String> tags, String title)
+            throws UserException, ContentsException;
 
     /**
      * Insert a new answer to a question on database
@@ -108,8 +113,11 @@ public interface ServiceAPI {
      *            id of the question that will be answered
      * @throws ContentsException,
      *             in case the question is closed, throws ContentsException
+     * @throws UserException
+     *             if logged user not exists on database
      */
-    public abstract void newAnswer(String text, Integer questionID) throws ContentsException;
+    public abstract void newAnswer(String text, Long questionID)
+            throws ContentsException, UserException;
 
     /**
      * Insert a new comment to a question or answer on database
@@ -121,8 +129,11 @@ public interface ServiceAPI {
      * @throws ContentsException
      *             in case the user try to comment something that isn't a
      *             question or a answer, throws ContentsException
+     * @throws UserException
+     *             if logged user not exists on database
      */
-    public abstract void newComment(String text, AbstractContent content) throws ContentsException;
+    public abstract void newComment(String text, AbstractContent content)
+            throws ContentsException, UserException;
 
     /**
      * Edits a content
@@ -144,7 +155,8 @@ public interface ServiceAPI {
      *             in case the user who tries to delete isn't admin or the
      *             author of the content, throws ContentsException
      */
-    public abstract void deleteContent(AbstractContent content) throws ContentsException;
+    public abstract void deleteContent(AbstractContent content)
+            throws ContentsException, UserException;
 
     /**
      * Return a specific question
@@ -152,8 +164,10 @@ public interface ServiceAPI {
      * @param questionID
      *            the id of the wanted question
      * @return the wanted question
+     * @throws ContentsException
+     *             in case the question not exists
      */
-    public abstract Question selectQuestion(Integer questionID);
+    public abstract Question selectQuestion(Long questionID) throws ContentsException;
 
     /**
      * return a list of all question with the query on it's title
@@ -182,7 +196,7 @@ public interface ServiceAPI {
      *             in case the user who wants to select the best answer isn't
      *             the author of the question, throws ContentsException
      */
-    public abstract void bestAnswer(Integer questionID, Integer answerID) throws ContentsException;
+    public abstract void bestAnswer(Long questionID, Long answerID) throws ContentsException;
 
     /**
      * set a status of a question as closed
@@ -193,7 +207,7 @@ public interface ServiceAPI {
      *             in case the user who tries to close the question isn't at
      *             least a admin, throws ContentsException
      */
-    public abstract void closeQuestion(Integer questionID) throws ContentsException;
+    public abstract void closeQuestion(Long questionID) throws ContentsException;
 
     /**
      * set a status of a question as open
@@ -204,22 +218,26 @@ public interface ServiceAPI {
      *             in case the user who tries to open the question isn't at
      *             least a admin, throws ContentsException
      */
-    public abstract void openQuestion(Integer questionID) throws ContentsException;
+    public abstract void openQuestion(Long questionID) throws ContentsException;
 
     /**
      * upvote a answer of a question
      * 
      * @param answerID
-     *            the id of the question that will be upvoted
+     *            the id of the answer that will be upvoted
+     * @throws ContentsException
+     *             in case the answer not exist
      */
-    public abstract void upVoteAnswer(Integer answerID);
+    public abstract void upVoteAnswer(Long answerID) throws ContentsException;
 
     /**
      * downvote a answer of a question
      * 
      * @param answerID
-     *            the id of the question that will be downvoted
+     *            the id of the answer that will be downvoted
+     * @throws ContentsException
+     *             in case the answer not exists
      */
-    public abstract void downVoteAnswer(Integer answerID);
+    public abstract void downVoteAnswer(Long answerID) throws ContentsException;
 
 }

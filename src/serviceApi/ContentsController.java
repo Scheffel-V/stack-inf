@@ -10,8 +10,8 @@ import domain.Question;
 import domain.Status;
 import domain.User;
 import persistence.ContentsCRUD;
-import persistence.UserCRUD;
 import utils.ContentsException;
+import utils.UserException;
 
 /**
  * @author lmrodrigues
@@ -20,15 +20,21 @@ import utils.ContentsException;
  */
 
 public class ContentsController {
-    private UserCRUD     userCRUD;
     private ContentsCRUD contentCRUD;
 
     /**
-     * Create a new database for the API.
+     * Create a new Contents controller for the API.
      */
     public ContentsController() {
-        this.userCRUD = new UserCRUD();
         this.contentCRUD = new ContentsCRUD();
+    }
+
+    /**
+     * Create a new Contents controller for the API. Allow Choose the
+     * persistence unit.
+     */
+    public ContentsController(String persistenceUnit) {
+        this.contentCRUD = new ContentsCRUD(persistenceUnit);
     }
 
     /**
@@ -43,16 +49,24 @@ public class ContentsController {
      * @param title
      *            Question's title
      * @return The created Question
+     * @throws ContentsException
      */
-    public Question newQuestion(User logged, String text, List<String> tags, String title) {
-        Integer id = this.contentCRUD.getMaxQuestionId() + 1;
+    public Question newQuestion(User logged, String text, List<String> tags, String title)
+            throws ContentsException {
+        Long id = this.contentCRUD.getMaxQuestionId() + 1;
 
         Question newQuestion = new Question(id, logged, text, title, tags);
         logged.addQuestion(newQuestion);
 
-        this.userCRUD.update(logged);
-        this.contentCRUD.create(newQuestion);
-
+        try {
+            this.contentCRUD.create(newQuestion);
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.id") {
+                throw new ContentsException("replicated.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
         return newQuestion;
     }
 
@@ -68,10 +82,13 @@ public class ContentsController {
      *            Question'id of the answer
      * @throws ContentsException
      *             in case the Question is closed
+     * @throws UserException
+     *             if user not exists on database
      */
 
-    public void newAnswer(User logged, String text, Integer questionID) throws ContentsException {
-        Integer answerId = this.contentCRUD.getMaxAnswerId() + 1;
+    public void newAnswer(User logged, String text, Long questionID)
+            throws ContentsException, UserException {
+        Long answerId = this.contentCRUD.getMaxAnswerId() + 1;
         Question question = this.contentCRUD.readQuestion(questionID);
 
         if (question.getStatus() == Status.OPEN) {
@@ -80,9 +97,15 @@ public class ContentsController {
             question.addAnswer(newAnswer);
             logged.addAnswer(newAnswer);
 
-            this.userCRUD.update(logged);
-            this.contentCRUD.update(question);
-            this.contentCRUD.create(newAnswer);
+            try {
+                this.contentCRUD.update(question);
+            } catch (ContentsException e) {
+                if (e.getMessage() == "invalid.id") {
+                    throw new ContentsException("replicated.id");
+                } else {
+                    throw new ContentsException("unexpected.error", e);
+                }
+            }
 
         } else {
             throw new ContentsException("closed.question");
@@ -99,17 +122,26 @@ public class ContentsController {
      * @param content
      *            Question that will receive this comment
      * @throws ContentsException
+     * @throws UserException
+     *             if the user not exists on database
      */
-    public void newComment(User logged, String text, Question question) throws ContentsException {
-        Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
+    public void newComment(User logged, String text, Question question)
+            throws ContentsException, UserException {
+        Long commentId = this.contentCRUD.getMaxCommentId() + 1;
         Comment newComment = new Comment(commentId, logged, text);
 
         question.addComment(newComment);
         logged.addComment(newComment);
 
-        this.userCRUD.update(logged);
-        this.contentCRUD.update(question);
-        this.contentCRUD.create(newComment);
+        try {
+            this.contentCRUD.update(question);
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.id") {
+                throw new ContentsException("replicated.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -123,17 +155,26 @@ public class ContentsController {
      * @param answer
      *            Answer that will receive this comment
      * @throws ContentsException
+     * @throws UserException
+     *             if user not exists on database
      */
-    public void newComment(User logged, String text, Answer answer) throws ContentsException {
-        Integer commentId = this.contentCRUD.getMaxCommentId() + 1;
+    public void newComment(User logged, String text, Answer answer)
+            throws ContentsException, UserException {
+        Long commentId = this.contentCRUD.getMaxCommentId() + 1;
         Comment newComment = new Comment(commentId, logged, text);
 
         answer.addComment(newComment);
         logged.addComment(newComment);
 
-        this.userCRUD.update(logged);
-        this.contentCRUD.update(answer);
-        this.contentCRUD.create(newComment);
+        try {
+            this.contentCRUD.update(answer);
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.id") {
+                throw new ContentsException("replicated.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -159,6 +200,7 @@ public class ContentsController {
     }
 
     /**
+     * 
      * Delete a content of dataBase
      * 
      * @param logged
@@ -170,30 +212,32 @@ public class ContentsController {
      *             permission to delete it;
      * 
      *             - in case the content to be deleted is invalid;
+     * @throws UserException
+     *             in case the author of question is invalid
      */
-    public void deleteContent(User logged, AbstractContent content) throws ContentsException {
+    public void deleteContent(User logged, AbstractContent content)
+            throws ContentsException, UserException {
         if (this.isAbleToEdit(logged, content)) {
 
             if (content instanceof Question) {
-                User author = content.getAuthor();
-                author.delQuestion((Question) content);
+                if (logged == content.getAuthor()) {
+                    logged.delQuestion((Question) content);
+                }
 
-                this.userCRUD.update(author);
-                this.contentCRUD.delete(content);
+                this.contentCRUD.delete((Question) content);
 
             } else if (content instanceof Answer) {
-                User author = content.getAuthor();
-                author.delAnswer((Answer) content);
-
-                this.userCRUD.update(author);
-                this.contentCRUD.delete(content);
+                if (logged == content.getAuthor()) {
+                    logged.delAnswer((Answer) content);
+                }
+                this.contentCRUD.delete((Answer) content);
 
             } else if (content instanceof Comment) {
-                User author = content.getAuthor();
-                author.delComments((Comment) content);
+                if (logged == content.getAuthor()) {
+                    logged.delComment((Comment) content);
+                }
 
-                this.userCRUD.update(author);
-                this.contentCRUD.delete(content);
+                this.contentCRUD.delete((Comment) content);
 
             } else {
                 throw new ContentsException("invalid.content");
@@ -210,8 +254,10 @@ public class ContentsController {
      * @param questionID
      *            wanted question's id
      * @return the wanted question
+     * @throws ContentsException
+     *             if question not exists
      */
-    public Question selectQuestion(Integer questionID) {
+    public Question selectQuestion(Long questionID) throws ContentsException {
         return this.contentCRUD.readQuestion(questionID);
     }
 
@@ -232,7 +278,7 @@ public class ContentsController {
      * @return all question on the database
      */
     public List<Question> listAllQuestions() {
-        return this.contentCRUD.listAllQuestion();
+        return this.contentCRUD.listAllQuestions();
     }
 
     /**
@@ -247,9 +293,13 @@ public class ContentsController {
      *            the id of the answer that will be set as the best answer
      * @throws ContentsException
      *             in case the user that try to set a best answer is not the
-     *             author of the question
+     *             author of the question;
+     * 
+     *             if Question not exists;
+     * 
+     *             if Answer not exists;
      */
-    public void bestAnswer(User logged, Integer questionID, Integer answerID) throws ContentsException {
+    public void bestAnswer(User logged, Long questionID, Long answerID) throws ContentsException {
         Question question = this.selectQuestion(questionID);
 
         Boolean isAuthor = logged.getUsername() == question.getAuthor().getUsername();
@@ -273,8 +323,10 @@ public class ContentsController {
      * @throws ContentsException
      *             in case the user that try changes the question's status isn't
      *             at least a ADMIN
+     * 
+     *             in case the question not exists;
      */
-    public void closeQuestion(User logged, Integer questionID) throws ContentsException {
+    public void closeQuestion(User logged, Long questionID) throws ContentsException {
         if (isAdminOrModer(logged)) {
 
             Question toClose = this.selectQuestion(questionID);
@@ -296,8 +348,10 @@ public class ContentsController {
      * @throws ContentsException
      *             in case the user who tries to change the question's status
      *             isn't at least a ADMIN
+     * 
+     *             in case question not exists
      */
-    public void openQuestion(User logged, Integer questionID) throws ContentsException {
+    public void openQuestion(User logged, Long questionID) throws ContentsException {
         if (isAdminOrModer(logged)) {
 
             Question toOpen = this.selectQuestion(questionID);
@@ -316,8 +370,10 @@ public class ContentsController {
      *            the user who wants to upvote a answer
      * @param answerID
      *            the id of the answer that will be upvoted
+     * @throws ContentsException
+     *             in case the answer not exists
      */
-    public void upVoteAnswer(Integer answerID) {
+    public void upVoteAnswer(Long answerID) throws ContentsException {
         Answer answer = this.contentCRUD.readAnswer(answerID);
         answer.addUpVotes();
         this.contentCRUD.update(answer);
@@ -330,8 +386,10 @@ public class ContentsController {
      *            the user who wants to downvote a answer
      * @param answerID
      *            the id of the answer that will be downvoted
+     * @throws ContentsException
+     *             in case the answer not exists
      */
-    public void downVoteAnswer(Integer answerID) {
+    public void downVoteAnswer(Long answerID) throws ContentsException {
         Answer answer = this.contentCRUD.readAnswer(answerID);
         answer.addDownVotes();
         this.contentCRUD.update(answer);

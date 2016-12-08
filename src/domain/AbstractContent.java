@@ -3,20 +3,27 @@ package domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;;
 
 /**
  * @author lmrodrigues
  * @author flmachado
  */
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractContent {
 
     @Id
-    private Integer id;
-    private Date    date;
-    private User    author;
-    private String  text;
+    private Long   id;
+    private Date   date;
+    @ManyToOne
+    @JoinColumn(name = "USERNAME")
+    private User   author;
+    private String text;
 
     /**
      * creates a empty content
@@ -26,7 +33,6 @@ public abstract class AbstractContent {
         this.date = null;
         this.author = null;
         this.text = null;
-
     }
 
     /**
@@ -39,7 +45,7 @@ public abstract class AbstractContent {
      * @param text
      *            the text of the content
      */
-    public AbstractContent(Integer id, User author, String text) {
+    public AbstractContent(Long id, User author, String text) {
         this.id = id;
         this.date = new Date();
         this.author = author;
@@ -51,7 +57,7 @@ public abstract class AbstractContent {
      * 
      * @return the id of the content
      */
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
 
@@ -61,7 +67,7 @@ public abstract class AbstractContent {
      * @param id
      *            the new id for the content
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

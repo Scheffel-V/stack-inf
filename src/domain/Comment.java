@@ -1,6 +1,7 @@
 package domain;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author lmrodrigues
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
  */
 
 @Entity
+@Table(name = "COMMENT")
 public class Comment extends AbstractContent {
 
     /**
@@ -28,8 +30,8 @@ public class Comment extends AbstractContent {
      * @param commentID
      *            the id of the comment
      */
-    public Comment(Integer commentID, User author, String text) {
-        super(commentID, author, text);
+    public Comment(Long id, User author, String text) {
+        super(id, author, text);
     }
 
 }
