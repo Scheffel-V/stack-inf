@@ -71,7 +71,9 @@ public class Answer extends AbstractContent {
      *            the comment that will be addicted to the answer's comments
      */
     public void addComment(Comment comment) {
-        this.comments.add(comment);
+        if (comment != null) {
+            this.comments.add(comment);
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package domain;
+package utils;
 
 /**
  * User can be common, moderator and administrator. Common has more limited

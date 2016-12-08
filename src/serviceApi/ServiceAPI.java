@@ -3,10 +3,10 @@ package serviceApi;
 import java.util.List;
 
 import domain.AbstractContent;
-import domain.Permission;
 import domain.Question;
 import domain.User;
 import utils.ContentsException;
+import utils.Permission;
 import utils.UserException;
 
 /**
