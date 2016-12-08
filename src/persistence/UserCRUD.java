@@ -134,21 +134,4 @@ public class UserCRUD extends AbstractCRUD {
         return query.getResultList();
     }
 
-    /**
-     * Verify if an username is already on database
-     * 
-     * @param username
-     *            to be verified
-     * @return A Boolean Value: True -> username already assigned to an user
-     *         False -> username not assigned yet
-     */
-    public Boolean isReplicatedUsername(String username) {
-        try {
-            read(username);
-            return true;
-        } catch (UserException _) {
-            return false;
-        }
-    }
-
 }

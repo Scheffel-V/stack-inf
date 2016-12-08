@@ -45,13 +45,16 @@ public class UserController {
     public void newAccount(String username, String password, String email, String name,
             Permission userPermission) throws UserException {
 
-        if (!userCRUD.isReplicatedUsername(username)) {
-            User newUser = new User(username, password, email, name);
+        User newUser = new User(username, password, email, name);
+
+        try {
             userCRUD.create(newUser);
-
-        } else {
-            throw new UserException("replicated.username");
-
+        } catch (UserException e) {
+            if (e.getMessage() == "invalid.email.or.username") {
+                throw new UserException("replicated.username");
+            } else {
+                throw new UserException("unexpected.erro", e);
+            }
         }
 
     }

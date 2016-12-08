@@ -10,7 +10,6 @@ import domain.Question;
 import domain.Status;
 import domain.User;
 import persistence.ContentsCRUD;
-import persistence.UserCRUD;
 import utils.ContentsException;
 import utils.UserException;
 
@@ -21,14 +20,12 @@ import utils.UserException;
  */
 
 public class ContentsController {
-    private UserCRUD     userCRUD;
     private ContentsCRUD contentCRUD;
 
     /**
      * Create a new Contents controller for the API.
      */
     public ContentsController() {
-        this.userCRUD = new UserCRUD();
         this.contentCRUD = new ContentsCRUD();
     }
 
@@ -37,7 +34,6 @@ public class ContentsController {
      * persistence unit.
      */
     public ContentsController(String persistenceUnit) {
-        this.userCRUD = new UserCRUD(persistenceUnit);
         this.contentCRUD = new ContentsCRUD(persistenceUnit);
     }
 
@@ -53,20 +49,24 @@ public class ContentsController {
      * @param title
      *            Question's title
      * @return The created Question
-     * @throws UserException
-     *             if user not exists on database
      * @throws ContentsException
      */
     public Question newQuestion(User logged, String text, List<String> tags, String title)
-            throws UserException, ContentsException {
+            throws ContentsException {
         Long id = this.contentCRUD.getMaxQuestionId() + 1;
 
         Question newQuestion = new Question(id, logged, text, title, tags);
         logged.addQuestion(newQuestion);
 
-        this.userCRUD.update(logged);
-        this.contentCRUD.create(newQuestion);
-
+        try {
+            this.contentCRUD.create(newQuestion);
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.id") {
+                throw new ContentsException("replicated.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
         return newQuestion;
     }
 
@@ -97,9 +97,15 @@ public class ContentsController {
             question.addAnswer(newAnswer);
             logged.addAnswer(newAnswer);
 
-            this.userCRUD.update(logged);
-            this.contentCRUD.update(question);
-            this.contentCRUD.create(newAnswer);
+            try {
+                this.contentCRUD.update(question);
+            } catch (ContentsException e) {
+                if (e.getMessage() == "invalid.id") {
+                    throw new ContentsException("replicated.id");
+                } else {
+                    throw new ContentsException("unexpected.error", e);
+                }
+            }
 
         } else {
             throw new ContentsException("closed.question");
@@ -127,9 +133,15 @@ public class ContentsController {
         question.addComment(newComment);
         logged.addComment(newComment);
 
-        this.userCRUD.update(logged);
-        this.contentCRUD.update(question);
-        this.contentCRUD.create(newComment);
+        try {
+            this.contentCRUD.update(question);
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.id") {
+                throw new ContentsException("replicated.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -154,9 +166,15 @@ public class ContentsController {
         answer.addComment(newComment);
         logged.addComment(newComment);
 
-        this.userCRUD.update(logged);
-        this.contentCRUD.update(answer);
-        this.contentCRUD.create(newComment);
+        try {
+            this.contentCRUD.update(answer);
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.id") {
+                throw new ContentsException("replicated.id");
+            } else {
+                throw new ContentsException("unexpected.error", e);
+            }
+        }
 
     }
 
@@ -183,8 +201,6 @@ public class ContentsController {
 
     /**
      * 
-     * TODO SPLIT THIS METHOD TO REMOVE CASTS
-     * 
      * Delete a content of dataBase
      * 
      * @param logged
@@ -204,25 +220,24 @@ public class ContentsController {
         if (this.isAbleToEdit(logged, content)) {
 
             if (content instanceof Question) {
-                User author = content.getAuthor();
-                author.delQuestion((Question) content);
+                if (logged == content.getAuthor()) {
+                    logged.delQuestion((Question) content);
+                }
 
-                this.userCRUD.update(author);
                 this.contentCRUD.delete((Question) content);
 
             } else if (content instanceof Answer) {
-                User author = content.getAuthor();
-                author.delAnswer((Answer) content);
-
-                this.userCRUD.update(author);
+                if (logged == content.getAuthor()) {
+                    logged.delAnswer((Answer) content);
+                }
                 this.contentCRUD.delete((Answer) content);
 
             } else if (content instanceof Comment) {
-                User author = content.getAuthor();
-                author.delComment((Comment) content);
+                if (logged == content.getAuthor()) {
+                    logged.delComment((Comment) content);
+                }
 
-                this.userCRUD.update(author);
-                this.contentCRUD.delete((Answer) content);
+                this.contentCRUD.delete((Comment) content);
 
             } else {
                 throw new ContentsException("invalid.content");
