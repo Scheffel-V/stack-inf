@@ -10,6 +10,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import utils.Status;
+
 /***
  * @author lmrodrigues
  * @author flmachado

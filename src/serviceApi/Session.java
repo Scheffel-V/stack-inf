@@ -4,10 +4,10 @@ import java.util.List;
 
 import domain.AbstractContent;
 import domain.Answer;
-import domain.Permission;
 import domain.Question;
 import domain.User;
 import utils.ContentsException;
+import utils.Permission;
 import utils.UserException;
 
 /**
@@ -97,7 +97,7 @@ public class Session implements ServiceAPI {
     /**
      * @throws UserException
      * @see serviceApi.ServiceAPI#newAccount(java.lang.String, java.lang.String,
-     *      java.lang.String, java.lang.String, domain.Permission)
+     *      java.lang.String, java.lang.String, utils.Permission)
      */
     public void newAccount(String username, String password, String email, String name,
             Permission userPermission) throws UserException {
@@ -142,7 +142,7 @@ public class Session implements ServiceAPI {
     /**
      * @throws UserException
      * @see serviceApi.ServiceAPI#changeUserPermission(java.lang.String,
-     *      domain.Permission)
+     *      utils.Permission)
      */
     public void changeUserPermission(String username, Permission newPermission)
             throws UserException {

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import utils.Permission;
+
 /**
  * @author lmrodrigues
  * @author pcrachevsky

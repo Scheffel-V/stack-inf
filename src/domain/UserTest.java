@@ -14,6 +14,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import utils.Permission;
+
 /**
  * @author lmrodrigues
  * @author Scheffel-V
@@ -44,19 +46,19 @@ public class UserTest {
 
         tags = null;
         questions = new ArrayList<Question>();
-        questions.add(new Question(1, userList.get(1), "text", "title", tags));
-        questions.add(new Question(2, userList.get(1), "text", "title", tags));
-        questions.add(new Question(3, userList.get(1), "text", "title", tags));
+        questions.add(new Question((long) 1, userList.get(1), "text", "title", tags));
+        questions.add(new Question((long) 2, userList.get(1), "text", "title", tags));
+        questions.add(new Question((long) 3, userList.get(1), "text", "title", tags));
 
         answers = new ArrayList<Answer>();
-        answers.add(new Answer(4, userList.get(1), "text"));
-        answers.add(new Answer(5, userList.get(1), "text"));
-        answers.add(new Answer(6, userList.get(1), "text"));
+        answers.add(new Answer((long) 4, userList.get(1), "text"));
+        answers.add(new Answer((long) 5, userList.get(1), "text"));
+        answers.add(new Answer((long) 6, userList.get(1), "text"));
 
         comments = new ArrayList<Comment>();
-        comments.add(new Comment(7, userList.get(1), "text"));
-        comments.add(new Comment(8, userList.get(1), "text"));
-        comments.add(new Comment(9, userList.get(1), "text"));
+        comments.add(new Comment((long) 7, userList.get(1), "text"));
+        comments.add(new Comment((long) 8, userList.get(1), "text"));
+        comments.add(new Comment((long) 9, userList.get(1), "text"));
     }
 
     /**
@@ -66,10 +68,14 @@ public class UserTest {
     @Test
     public final void testUser() {
         assertNotNull("User argumentless constructor gives null object.", userList.get(0));
-        assertTrue("Username field of argumentless User construct is not null.", userList.get(0).getUsername() == null);
-        assertTrue("Password field of argumentless User construct is not null.", userList.get(0).getPassword() == null);
-        assertTrue("Name field of argumentless User construct is not null.", userList.get(0).getName() == null);
-        assertTrue("Email field of argumentless User construct is not null.", userList.get(0).getEmail() == null);
+        assertTrue("Username field of argumentless User construct is not null.",
+                userList.get(0).getUsername() == null);
+        assertTrue("Password field of argumentless User construct is not null.",
+                userList.get(0).getPassword() == null);
+        assertTrue("Name field of argumentless User construct is not null.",
+                userList.get(0).getName() == null);
+        assertTrue("Email field of argumentless User construct is not null.",
+                userList.get(0).getEmail() == null);
         assertTrue("BlockStatus field of argumentless User construct is not null.",
                 userList.get(0).getBlockStatus() == null);
         assertTrue("UserPermission field of argumentless User construct is not null.",
@@ -92,20 +98,22 @@ public class UserTest {
         assertNotNull("User constructor with arguments gives null object.", userList.get(1));
         assertTrue("Problem in username field of construct with arguments.",
                 userList.get(1).getUsername() == "vbscheffel");
-        assertTrue("Problem in password field of construct with arguments.", userList.get(1).getPassword() == "123abc");
-        assertTrue("Problem in name field of construct with arguments.", userList.get(1).getName() == "Vinicius");
+        assertTrue("Problem in password field of construct with arguments.",
+                userList.get(1).getPassword() == "123abc");
+        assertTrue("Problem in name field of construct with arguments.",
+                userList.get(1).getName() == "Vinicius");
         assertTrue("Problem in email field of construct with arguments.",
                 userList.get(1).getEmail() == "brsufirefox@gmail.com");
         assertTrue("blockStatus from construct with arguments is not false.",
                 userList.get(1).getBlockStatus() == false);
-        assertSame("Problem in userPermission field from construct with arguments.", Permission.COMMON,
-                userList.get(1).getUserPermission());
-        assertEquals("Problem in userAnswers list field from construct with arguments.", new ArrayList<Answer>(),
-                userList.get(1).getUserAnswers());
-        assertEquals("Problem in userComments list field from construct with arguments.", new ArrayList<Comment>(),
-                userList.get(1).getUserComments());
-        assertEquals("Problem in userQuestions list field from construct with arguments.", new ArrayList<Question>(),
-                userList.get(1).getUserQuestions());
+        assertSame("Problem in userPermission field from construct with arguments.",
+                Permission.COMMON, userList.get(1).getUserPermission());
+        assertEquals("Problem in userAnswers list field from construct with arguments.",
+                new ArrayList<Answer>(), userList.get(1).getUserAnswers());
+        assertEquals("Problem in userComments list field from construct with arguments.",
+                new ArrayList<Comment>(), userList.get(1).getUserComments());
+        assertEquals("Problem in userQuestions list field from construct with arguments.",
+                new ArrayList<Question>(), userList.get(1).getUserQuestions());
     }
 
     /**
@@ -256,25 +264,31 @@ public class UserTest {
     @Test
     public final void testGetUserPermission() {
         assertTrue("Problem in getUserPermission.", userList.get(0).getUserPermission() == null);
-        assertTrue("Problem in getUserPermission.", userList.get(1).getUserPermission() == Permission.COMMON);
+        assertTrue("Problem in getUserPermission.",
+                userList.get(1).getUserPermission() == Permission.COMMON);
         userList.get(1).setUserPermission(Permission.ADMIN);
-        assertTrue("Problem in getUserPermission.", userList.get(1).getUserPermission() == Permission.ADMIN);
+        assertTrue("Problem in getUserPermission.",
+                userList.get(1).getUserPermission() == Permission.ADMIN);
         userList.get(1).setUserPermission(Permission.MODERATOR);
-        assertTrue("Problem in getUserPermission.", userList.get(1).getUserPermission() == Permission.MODERATOR);
+        assertTrue("Problem in getUserPermission.",
+                userList.get(1).getUserPermission() == Permission.MODERATOR);
     }
 
     /**
-     * Test method for {@link domain.User#setUserPermission(domain.Permission)}.
+     * Test method for {@link domain.User#setUserPermission(utils.Permission)}.
      * This test will check if the setUserPermission method is correct.
      */
     @Test
     public final void testSetUserPermission() {
         userList.get(1).setUserPermission(Permission.ADMIN);
-        assertTrue("Problem in setUserPermission.", userList.get(1).getUserPermission() == Permission.ADMIN);
+        assertTrue("Problem in setUserPermission.",
+                userList.get(1).getUserPermission() == Permission.ADMIN);
         userList.get(1).setUserPermission(Permission.MODERATOR);
-        assertTrue("Problem in setUserPermission.", userList.get(1).getUserPermission() == Permission.MODERATOR);
+        assertTrue("Problem in setUserPermission.",
+                userList.get(1).getUserPermission() == Permission.MODERATOR);
         userList.get(1).setUserPermission(Permission.COMMON);
-        assertTrue("Problem in setUserPermission.", userList.get(1).getUserPermission() == Permission.COMMON);
+        assertTrue("Problem in setUserPermission.",
+                userList.get(1).getUserPermission() == Permission.COMMON);
     }
 
     /**
@@ -284,10 +298,13 @@ public class UserTest {
     @Test
     public final void testGetUserQuestions() {
         assertTrue("Problem in getUserQuestions.", userList.get(0).getUserQuestions() == null);
-        assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().isEmpty() == true);
+        assertTrue("Problem in getUserQuestions.",
+                userList.get(1).getUserQuestions().isEmpty() == true);
         userList.get(1).setUserQuestions(questions);
-        assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().isEmpty() == false);
-        assertTrue("Problem in getUserQuestions.", userList.get(1).getUserQuestions().get(2).getId() == 3);
+        assertTrue("Problem in getUserQuestions.",
+                userList.get(1).getUserQuestions().isEmpty() == false);
+        assertTrue("Problem in getUserQuestions.",
+                userList.get(1).getUserQuestions().get(2).getId() == 3);
     }
 
     /**
@@ -312,10 +329,13 @@ public class UserTest {
     @Test
     public final void testGetUserAnswers() {
         assertTrue("Problem in getUserAnswers.", userList.get(0).getUserAnswers() == null);
-        assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().isEmpty() == true);
+        assertTrue("Problem in getUserAnswers.",
+                userList.get(1).getUserAnswers().isEmpty() == true);
         userList.get(1).setUserAnswers(answers);
-        assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().isEmpty() == false);
-        assertTrue("Problem in getUserAnswers.", userList.get(1).getUserAnswers().get(2).getId() == 6);
+        assertTrue("Problem in getUserAnswers.",
+                userList.get(1).getUserAnswers().isEmpty() == false);
+        assertTrue("Problem in getUserAnswers.",
+                userList.get(1).getUserAnswers().get(2).getId() == 6);
     }
 
     /**
@@ -340,10 +360,13 @@ public class UserTest {
     @Test
     public final void testGetUserComments() {
         assertTrue("Problem in getUserComments.", userList.get(0).getUserComments() == null);
-        assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().isEmpty() == true);
+        assertTrue("Problem in getUserComments.",
+                userList.get(1).getUserComments().isEmpty() == true);
         userList.get(1).setUserComments(comments);
-        assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().isEmpty() == false);
-        assertTrue("Problem in getUserComments.", userList.get(1).getUserComments().get(2).getId() == 9);
+        assertTrue("Problem in getUserComments.",
+                userList.get(1).getUserComments().isEmpty() == false);
+        assertTrue("Problem in getUserComments.",
+                userList.get(1).getUserComments().get(2).getId() == 9);
     }
 
     /**

@@ -31,8 +31,8 @@ public class CommentTest {
 
         user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
         comment_0 = new Comment();
-        comment_1 = new Comment(1, user, "Text");
-        comment_2 = new Comment(1, user, "Text");
+        comment_1 = new Comment((long) 1, user, "Text");
+        comment_2 = new Comment((long) 1, user, "Text");
     }
 
     /**
@@ -50,7 +50,8 @@ public class CommentTest {
         assertTrue("Problem in ID field of Comment construct.", comment_2.getId() == 1);
         assertTrue("Problem in author field of Comment construct.",
                 comment_2.getAuthor().getUsername().equals("Vinicius"));
-        assertTrue("Problem in text field of Comment construct.", comment_2.getText().equals("Text"));
+        assertTrue("Problem in text field of Comment construct.",
+                comment_2.getText().equals("Text"));
     }
 
     /**
@@ -71,9 +72,9 @@ public class CommentTest {
     @Test
     public final void testSetId() {
 
-        comment_1.setId(2);
+        comment_1.setId((long) 2);
         assertTrue("Problem in setId of Answer construct.", comment_1.getId() == 2);
-        comment_2.setId(3);
+        comment_2.setId((long) 3);
         assertTrue("Problem in setId of Answer construct.", comment_2.getId() == 3);
     }
 

@@ -5,12 +5,12 @@ import java.util.List;
 import domain.AbstractContent;
 import domain.Answer;
 import domain.Comment;
-import domain.Permission;
 import domain.Question;
-import domain.Status;
 import domain.User;
 import persistence.ContentsCRUD;
 import utils.ContentsException;
+import utils.Permission;
+import utils.Status;
 import utils.UserException;
 
 /**

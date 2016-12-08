@@ -22,14 +22,14 @@ public class AnswerTest {
     ArrayList<Answer>  answers;
     ArrayList<Comment> comments;
 
-    User               user     = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
+    User user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
 
-    Comment            comment0 = new Comment(2, user, "Comment Text");
-    Comment            comment1 = new Comment(3, user, "Comment Text Two");
-    Comment            comment2 = new Comment(4, user, "Test Text");
+    Comment comment0 = new Comment((long) 2, user, "Comment Text");
+    Comment comment1 = new Comment((long) 3, user, "Comment Text Two");
+    Comment comment2 = new Comment((long) 4, user, "Test Text");
 
-    Answer             answer0  = new Answer();
-    Answer             answer1  = new Answer(1, user, "Text");
+    Answer answer0 = new Answer();
+    Answer answer1 = new Answer((long) 1, user, "Text");
 
     /**
      * @throws java.lang.Exception
@@ -57,13 +57,15 @@ public class AnswerTest {
 
         assertNotNull("Problem in Answer construct with no arguments.", answers.get(0));
         assertTrue("Problem in ID field of Answer construct.", answers.get(0).getId() == null);
-        assertTrue("Problem in author field of Answer construct.", answers.get(0).getAuthor() == null);
+        assertTrue("Problem in author field of Answer construct.",
+                answers.get(0).getAuthor() == null);
         assertTrue("Problem in text field of Answer construct.", answers.get(0).getText() == null);
         assertNotNull("Problem in Answer construct with arguments.", answers.get(1));
         assertTrue("Problem in ID field of Answer construct.", answers.get(1).getId() == 1);
         assertTrue("Problem in author field of Answer construct.",
                 answers.get(1).getAuthor().getUsername() == "Vinicius");
-        assertTrue("Problem in text field of Answer construct.", answers.get(1).getText() == "Text");
+        assertTrue("Problem in text field of Answer construct.",
+                answers.get(1).getText() == "Text");
     }
 
     /**
@@ -84,9 +86,9 @@ public class AnswerTest {
     @Test
     public final void testSetId() {
 
-        answers.get(1).setId(2);
+        answers.get(1).setId((long) 2);
         assertTrue("Problem in setId of Answer construct.", answers.get(1).getId() == 2);
-        answers.get(1).setId(3);
+        answers.get(1).setId((long) 3);
         assertTrue("Problem in setId of Answer construct.", answers.get(1).getId() == 3);
     }
 
@@ -126,7 +128,8 @@ public class AnswerTest {
         assertTrue("Problem in setAuthor of Answer construct.", answers.get(1).getAuthor() == user);
         User user_1 = new User();
         answers.get(1).setAuthor(user_1);
-        assertTrue("Problem in setAuthor of Answer construct.", answers.get(1).getAuthor() == user_1);
+        assertTrue("Problem in setAuthor of Answer construct.",
+                answers.get(1).getAuthor() == user_1);
     }
 
     /**
@@ -139,7 +142,8 @@ public class AnswerTest {
         assertTrue("Problem in getAuthor of Answer construct.", answers.get(1).getAuthor() == user);
         User user_1 = new User();
         answers.get(1).setAuthor(user_1);
-        assertTrue("Problem in getAuthor of Answer construct.", answers.get(1).getAuthor() == user_1);
+        assertTrue("Problem in getAuthor of Answer construct.",
+                answers.get(1).getAuthor() == user_1);
     }
 
     /**
@@ -151,7 +155,8 @@ public class AnswerTest {
 
         assertTrue("Problem in getText of Answer construct.", answers.get(1).getText() == "Text");
         answers.get(1).setText("Text Test");
-        assertTrue("Problem in getText of Answer construct.", answers.get(1).getText() == "Text Test");
+        assertTrue("Problem in getText of Answer construct.",
+                answers.get(1).getText() == "Text Test");
     }
 
     /**
@@ -164,7 +169,8 @@ public class AnswerTest {
         answers.get(1).setText("Text");
         assertTrue("Problem in setText of Answer construct.", answers.get(1).getText() == "Text");
         answers.get(1).setText("Text Test");
-        assertTrue("Problem in setText of Answer construct.", answers.get(1).getText() == "Text Test");
+        assertTrue("Problem in setText of Answer construct.",
+                answers.get(1).getText() == "Text Test");
     }
 
     /**

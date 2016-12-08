@@ -1,8 +1,8 @@
 package serviceApi;
 
-import domain.Permission;
 import domain.User;
 import persistence.UserCRUD;
+import utils.Permission;
 import utils.UserException;
 
 /**
