@@ -45,17 +45,8 @@ public class UserController {
     public void newAccount(String username, String password, String email, String name,
             Permission userPermission) throws UserException {
 
-        User newUser = new User(username, password, email, name);
-
-        try {
-            userCRUD.create(newUser);
-        } catch (UserException e) {
-            if (e.getMessage() == "invalid.email.or.username") {
-                throw new UserException("replicated.username");
-            } else {
-                throw new UserException("unexpected.erro", e);
-            }
-        }
+        User newUser = new User(username, password, email, name, userPermission);
+        userCRUD.create(newUser);
 
     }
 
@@ -72,7 +63,7 @@ public class UserController {
     public User login(String username, String password) throws UserException {
         User requestedUser = userCRUD.read(username);
 
-        if (requestedUser.getPassword() != password) {
+        if (!requestedUser.getPassword().contentEquals(password)) {
             throw new UserException("incorrect.password");
 
         } else if (requestedUser.isBlock()) {

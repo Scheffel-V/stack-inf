@@ -16,6 +16,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import utils.Permission;
 import utils.Status;
 
 /**
@@ -40,8 +41,10 @@ public class QuestionTest {
     public void setUp() throws Exception {
 
         tags = null;
-        vinicius = new User("vbscheffel", "123abc", "brsufirefox@gmail.com", "Vinicius");
-        sujeito = new User("sujeitousername", "123567", "sujeito.legal@gmail.com", "Sujeito");
+        vinicius = new User("vbscheffel", "123abc", "brsufirefox@gmail.com", "Vinicius",
+                Permission.COMMON);
+        sujeito = new User("sujeitousername", "123567", "sujeito.legal@gmail.com", "Sujeito",
+                Permission.COMMON);
         answer = new Answer((long) 10, sujeito, "Text");
         answer_2 = new Answer((long) 12, sujeito, "Text");
         answerList = new ArrayList<Answer>();

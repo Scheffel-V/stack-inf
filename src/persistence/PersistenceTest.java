@@ -21,6 +21,7 @@ import domain.Comment;
 import domain.Question;
 import domain.User;
 import utils.ContentsException;
+import utils.Permission;
 import utils.UserException;
 
 /**
@@ -59,9 +60,10 @@ public class PersistenceTest extends AbstractCRUD {
 
         assertTrue("Database not Empty before test", isDatabaseEmpty());
 
-        userOne = new User("user_one", "user_one", "user@one", "User One");
-        userTwo = new User("user_two", "user_two", "user@Two", "User Two");
-        userThree = new User("user_three", "user_three", "user@three", "User  Three");
+        userOne = new User("user_one", "user_one", "user@one", "User One", Permission.COMMON);
+        userTwo = new User("user_two", "user_two", "user@Two", "User Two", Permission.COMMON);
+        userThree = new User("user_three", "user_three", "user@three", "User  Three",
+                Permission.COMMON);
 
         questionOne = new Question((long) 1, userOne, "Here is the Question One Text",
                 "Question One", new ArrayList<String>());
