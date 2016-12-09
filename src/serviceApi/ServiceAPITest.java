@@ -166,6 +166,7 @@ public class ServiceAPITest {
         } catch (NullPointerException e) {
             fail("Null password not verified.");
         }
+        session.logout();
     }
 
     /**
@@ -199,15 +200,6 @@ public class ServiceAPITest {
     public final void testBlockUser() {
 
         try {
-            session.blockUser("test_username");
-            fail("Problem in blockUser.");
-        } catch (UserException e) {
-            if (e.getMessage() != "unauthorized.unblock.action") {
-                fail("Problem in blockUser.");
-            }
-        }
-
-        try {
             session.unblockUser(null);
             fail("Problem in blockUser with null username.");
         } catch (UserException e1) {
@@ -233,6 +225,7 @@ public class ServiceAPITest {
         try {
             session.blockUser("test_username");
         } catch (UserException e) {
+            System.out.println(e.getMessage());
             fail("Problem in blockUser.");
         }
         session.logout();
@@ -248,7 +241,7 @@ public class ServiceAPITest {
             session.unblockUser("test_username");
             fail("Problem in unblockUser.");
         } catch (UserException e) {
-            if (e.getMessage() != "unauthorized.unblock.action") {
+            if (e.getMessage() != "user.not.logged") {
                 fail("Problem in unblockUser.");
             }
         }
@@ -311,15 +304,6 @@ public class ServiceAPITest {
         }
 
         try {
-            session.changeUserPermission("test_username", Permission.MODERATOR);
-            fail("Problem in changeUserPermission.");
-        } catch (UserException e) {
-            if (e.getMessage() != "unauthorized.unblock.action") {
-                fail("Problem in changeUserPermission.");
-            }
-        }
-
-        try {
             session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
@@ -336,6 +320,7 @@ public class ServiceAPITest {
         try {
             session.changeUserPermission("test_username", Permission.MODERATOR);
         } catch (UserException e) {
+            System.out.println(e.getMessage());
             fail("Problem in changeUserPermission.");
         }
         session.logout();
@@ -382,6 +367,13 @@ public class ServiceAPITest {
         } catch (UserException e) {
             fail("Problem in changeUserPassword.");
         }
+
+        try {
+            session.changeUserPassword("test_admin_pass");
+        } catch (UserException e) {
+            fail("Problem in changeUserPassword.");
+        }
+
         session.logout();
     }
 
@@ -504,6 +496,19 @@ public class ServiceAPITest {
             }
         }
 
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from New Question.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
         try {
             session.newAnswer("Text", session.getLoggedUser().getUserQuestions().get(0).getId());
         } catch (UserException e) {
@@ -582,6 +587,19 @@ public class ServiceAPITest {
             }
         }
 
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from New Question.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
         try {
             session.newComment("Text", session.getLoggedUser().getUserQuestions().get(0));
         } catch (UserException e) {
@@ -645,7 +663,47 @@ public class ServiceAPITest {
      */
     @Test
     public final void testEditContent() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_username", "test_password");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    System.out.println(e.getMessage());
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from New Question.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.editContent(session.getLoggedUser().getUserQuestions().get(0));
+        } catch (ContentsException e) {
+            if (e.getMessage() == "not.authorized.user") {
+                fail("Problem in editContent.");
+            }
+        } catch (UserException e) {
+            if (e.getMessage() == "user.not.logged") {
+                fail("Problem in editContent.");
+            }
+        }
+
+        session.logout();
     }
 
     /**
@@ -654,7 +712,52 @@ public class ServiceAPITest {
      */
     @Test
     public final void testDeleteContent() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_admin", "test_admin_pass");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.deleteContent(session.getLoggedUser().getUserQuestions().get(0));
+        } catch (ContentsException e) {
+            if (e.getMessage() == "invalid.content") {
+                fail("Problem in deleteContent.");
+            }
+        } catch (UserException e) {
+            if (e.getMessage() == "user.not.logged") {
+                fail("Problem in deleteContent.");
+            } else {
+                if (e.getMessage() == "not.authorized.user") {
+                    fail("Problem in deleteContent.");
+                }
+            }
+        }
+        assertTrue("Problem in deleteContent.",
+                session.getLoggedUser().getUserQuestions().isEmpty() == true);
+
+        session.logout();
     }
 
     /**
@@ -663,7 +766,40 @@ public class ServiceAPITest {
      */
     @Test
     public final void testSelectQuestion() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_username", "test_password");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.selectQuestion(session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in selectQuestion.");
+        }
+
+        session.logout();
     }
 
     /**
@@ -672,7 +808,38 @@ public class ServiceAPITest {
      */
     @Test
     public final void testSearchQuestion() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_username", "test_password");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        assertTrue("Problem in searchQuestion.",
+                session.searchQuestion(session.getLoggedUser().getUserQuestions().get(0).getText())
+                        .isEmpty() == false);
+
+        session.logout();
     }
 
     /**
@@ -680,7 +847,48 @@ public class ServiceAPITest {
      */
     @Test
     public final void testListAllQuestions() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_username", "test_password");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.newQuestion("Text Two", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        assertTrue("Problem in listAllQuestion.", session.listAllQuestions().size() == 2);
+
+        session.logout();
     }
 
     /**
@@ -690,7 +898,55 @@ public class ServiceAPITest {
      */
     @Test
     public final void testBestAnswer() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_username", "test_password");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.newAnswer("Text", session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (UserException e) {
+            fail("Problem in getLogged from New Answer.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newAnswer.");
+            } else {
+                fail("Problem in newAnswer.");
+            }
+        }
+
+        try {
+            session.bestAnswer(session.getLoggedUser().getUserQuestions().get(0).getId(),
+                    session.getLoggedUser().getUserAnswers().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in bestAnswer.");
+        } catch (UserException e) {
+            fail("Problem in bestAnswer.");
+        }
+
+        session.logout();
     }
 
     /**
@@ -699,7 +955,41 @@ public class ServiceAPITest {
      */
     @Test
     public final void testCloseQuestion() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_admin", "test_admin_pass");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+        try {
+            session.closeQuestion(session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in closeQuestion.");
+        } catch (UserException e) {
+            fail("Problem in closeQuestion.");
+        }
+
+        session.logout();
     }
 
     /**
@@ -708,7 +998,49 @@ public class ServiceAPITest {
      */
     @Test
     public final void testOpenQuestion() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_admin", "test_admin_pass");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+        try {
+            session.closeQuestion(session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in closeQuestion.");
+        } catch (UserException e) {
+            fail("Problem in closeQuestion.");
+        }
+
+        try {
+            session.openQuestion(session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in openQuestion.");
+        } catch (UserException e) {
+            fail("Problem in openQuestion.");
+        }
+
+        session.logout();
     }
 
     /**
@@ -717,7 +1049,54 @@ public class ServiceAPITest {
      */
     @Test
     public final void testUpVoteAnswer() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_admin", "test_admin_pass");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.newAnswer("Text", session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (UserException e) {
+            fail("Problem in getLogged from New Answer.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newAnswer.");
+            } else {
+                fail("Problem in newAnswer.");
+            }
+        }
+
+        try {
+            session.upVoteAnswer(session.getLoggedUser().getUserAnswers().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in upVoteAnswer.");
+        } catch (UserException e) {
+            fail("Problem in upVoteAnswer.");
+        }
+
+        session.logout();
     }
 
     /**
@@ -726,7 +1105,54 @@ public class ServiceAPITest {
      */
     @Test
     public final void testDownVoteAnswer() {
-        fail("Not yet implemented"); // TODO
+        try {
+            session.login("test_admin", "test_admin_pass");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
+
+        ArrayList<String> tags = new ArrayList<String>();
+        try {
+            session.newQuestion("Text", tags, "Title");
+        } catch (UserException e) {
+            fail("Problem in getLogged from deleteContent.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newQuestion.");
+            } else {
+                fail("Problem in newQuestion.");
+            }
+        }
+
+        try {
+            session.newAnswer("Text", session.getLoggedUser().getUserQuestions().get(0).getId());
+        } catch (UserException e) {
+            fail("Problem in getLogged from New Answer.");
+        } catch (ContentsException e) {
+            if (e.getMessage() == "replicated.id") {
+                fail("Problem in newAnswer.");
+            } else {
+                fail("Problem in newAnswer.");
+            }
+        }
+
+        try {
+            session.downVoteAnswer(session.getLoggedUser().getUserAnswers().get(0).getId());
+        } catch (ContentsException e) {
+            fail("Problem in downVoteAnswer.");
+        } catch (UserException e) {
+            fail("Problem in downVoteAnswer.");
+        }
+
+        session.logout();
     }
 
     /**
@@ -734,7 +1160,25 @@ public class ServiceAPITest {
      */
     @Test
     public final void testGetLoggedUser() {
-        fail("Not yet implemented"); // TODO
-    }
+        try {
+            session.login("test_admin", "test_admin_pass");
+        } catch (UserException e) {
+            if (e.getMessage() == "incorrect.password") {
+                fail("Problem in login or account creation.");
+            } else {
+                if (e.getMessage() == "blocked.user") {
+                    fail("Problem in login or account creation.");
+                } else {
+                    fail("Unexpeceted Error");
+                }
+            }
+        }
 
+        assertTrue("Problem in getLoggedUser.",
+                session.getLoggedUser().getUsername() == "test_admin");
+        assertTrue("Problem in getLoggedUser.",
+                session.getLoggedUser().getPassword() == "test_admin_pass");
+
+        session.logout();
+    }
 }
