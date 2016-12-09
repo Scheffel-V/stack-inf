@@ -110,7 +110,11 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#login(java.lang.String, java.lang.String)
      */
     public void login(String username, String password) throws UserException {
-        this.loggedUser = getUserController().login(username, password);
+        if (username != null && password != null) {
+            this.loggedUser = getUserController().login(username, password);
+        } else {
+            throw new UserException("invalid.parameters");
+        }
 
     }
 
@@ -129,7 +133,11 @@ public class Session implements ServiceAPI {
     public void blockUser(String username) throws UserException {
         User logged = this.getLoggedUser();
         if (logged != null) {
-            this.userController.blockUser(logged, username);
+            if (username != null) {
+                this.userController.blockUser(logged, username);
+            } else {
+                throw new UserException("invalid.parameters");
+            }
         } else {
             throw new UserException("user.not.logged");
         }
@@ -144,7 +152,11 @@ public class Session implements ServiceAPI {
         User logged = this.getLoggedUser();
 
         if (logged != null) {
-            this.userController.unblockUser(logged, username);
+            if (username != null) {
+                this.userController.unblockUser(logged, username);
+            } else {
+                throw new UserException("invalid.parameters");
+            }
         } else {
             throw new UserException("user.not.logged");
         }
@@ -160,7 +172,12 @@ public class Session implements ServiceAPI {
         User logged = this.getLoggedUser();
 
         if (logged != null) {
-            this.userController.changeUserPermission(logged, username, newPermission);
+            if (username != null && newPermission != null) {
+                this.userController.changeUserPermission(this.getLoggedUser(), username,
+                        newPermission);
+            } else {
+                throw new UserException("invalid.parameters");
+            }
         } else {
             throw new UserException("user.not.logged");
         }
@@ -174,7 +191,11 @@ public class Session implements ServiceAPI {
         User logged = this.getLoggedUser();
 
         if (logged != null) {
-            this.userController.changeUserPassword(this.getLoggedUser(), newPassword);
+            if (newPassword != null) {
+                this.userController.changeUserPassword(logged, newPassword);
+            } else {
+                throw new UserException("invalid.parameters");
+            }
         } else {
             throw new UserException("user.not.logged");
         }
