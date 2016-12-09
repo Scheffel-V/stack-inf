@@ -143,8 +143,10 @@ public interface ServiceAPI {
      * @throws ContentsException
      *             in case the user who tries to edit isn't admin or the author
      *             of the content, throws ContentsException
+     * @throws UserException
      */
-    public abstract void editContent(AbstractContent content) throws ContentsException;
+    public abstract void editContent(AbstractContent content)
+            throws ContentsException, UserException;
 
     /**
      * Delete a content
@@ -195,8 +197,10 @@ public interface ServiceAPI {
      * @throws ContentsException
      *             in case the user who wants to select the best answer isn't
      *             the author of the question, throws ContentsException
+     * @throws UserException
      */
-    public abstract void bestAnswer(Long questionID, Long answerID) throws ContentsException;
+    public abstract void bestAnswer(Long questionID, Long answerID)
+            throws ContentsException, UserException;
 
     /**
      * set a status of a question as closed
@@ -206,8 +210,9 @@ public interface ServiceAPI {
      * @throws ContentsException
      *             in case the user who tries to close the question isn't at
      *             least a admin, throws ContentsException
+     * @throws UserException
      */
-    public abstract void closeQuestion(Long questionID) throws ContentsException;
+    public abstract void closeQuestion(Long questionID) throws ContentsException, UserException;
 
     /**
      * set a status of a question as open
@@ -217,8 +222,9 @@ public interface ServiceAPI {
      * @throws ContentsException
      *             in case the user who tries to open the question isn't at
      *             least a admin, throws ContentsException
+     * @throws UserException
      */
-    public abstract void openQuestion(Long questionID) throws ContentsException;
+    public abstract void openQuestion(Long questionID) throws ContentsException, UserException;
 
     /**
      * upvote a answer of a question
@@ -227,8 +233,9 @@ public interface ServiceAPI {
      *            the id of the answer that will be upvoted
      * @throws ContentsException
      *             in case the answer not exist
+     * @throws UserException
      */
-    public abstract void upVoteAnswer(Long answerID) throws ContentsException;
+    public abstract void upVoteAnswer(Long answerID) throws ContentsException, UserException;
 
     /**
      * downvote a answer of a question
@@ -237,7 +244,8 @@ public interface ServiceAPI {
      *            the id of the answer that will be downvoted
      * @throws ContentsException
      *             in case the answer not exists
+     * @throws UserException
      */
-    public abstract void downVoteAnswer(Long answerID) throws ContentsException;
+    public abstract void downVoteAnswer(Long answerID) throws ContentsException, UserException;
 
 }
