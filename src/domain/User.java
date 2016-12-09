@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -30,6 +32,7 @@ public class User {
     private String         email;
     private String         name;
     private Boolean        blockStatus;
+    @Enumerated(EnumType.STRING)
     private Permission     userPermission;
     @OneToMany(orphanRemoval = true)
     private List<Question> userQuestions;
@@ -59,12 +62,13 @@ public class User {
      * @param email
      * @param name
      */
-    public User(String username, String password, String email, String name) {
+    public User(String username, String password, String email, String name,
+            Permission userPermission) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
-        this.userPermission = Permission.COMMON;
+        this.userPermission = userPermission;
         this.blockStatus = false;
         this.userAnswers = new ArrayList<Answer>();
         this.userQuestions = new ArrayList<Question>();

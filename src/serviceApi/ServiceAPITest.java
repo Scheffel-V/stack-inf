@@ -37,17 +37,17 @@ public class ServiceAPITest {
     ContentsController contentsController;
     Session            session;
 
-    User               userOne;
-    User               userTwo;
+    User userOne;
+    User userTwo;
 
-    Question           questionOne;
-    Question           questionTwo;
+    Question questionOne;
+    Question questionTwo;
 
-    Answer             answerOne;
-    Answer             answerTwo;
+    Answer answerOne;
+    Answer answerTwo;
 
-    Comment            commentOne;
-    Comment            commentTwo;
+    Comment commentOne;
+    Comment commentTwo;
 
     /**
      * @throws java.lang.Exception
@@ -58,8 +58,8 @@ public class ServiceAPITest {
         contentsCrud = new ContentsCRUD("TestsCRUD");
         userCrud = new UserCRUD("TestsCRUD");
 
-        userOne = new User("user_one", "user_one", "user@one", "User One");
-        userTwo = new User("user_two", "user_two", "user@Two", "User Two");
+        userOne = new User("user_one", "user_one", "user@one", "User One", Permission.COMMON);
+        userTwo = new User("user_two", "user_two", "user@Two", "User Two", Permission.COMMON);
 
         questionOne = new Question((long) 1, userOne, "Here is the Question One Text",
                 "Question One", new ArrayList<String>());
@@ -97,10 +97,9 @@ public class ServiceAPITest {
             session.newAccount("test_username", "test_password", "test_email", "test_name",
                     Permission.COMMON);
         } catch (UserException e) {
-            if (e.getMessage() == "replicated.username") {
+            if (e.getMessage() == "invalid.username.or.email") {
                 assertTrue("The user should not be added", true);
             } else {
-                e.getCause().printStackTrace();
                 fail("Unexpected Error");
             }
         }
@@ -109,7 +108,7 @@ public class ServiceAPITest {
             session.newAccount("test_admin", "test_admin_pass", "test_admin_email",
                     "test_admin_name", Permission.ADMIN);
         } catch (UserException e) {
-            if (e.getMessage() == "invalid.email.or.username") {
+            if (e.getMessage() == "invalid.username.or.email") {
                 assertTrue("The user should not be added", true);
             } else {
                 fail("Unexpected Error");
@@ -124,7 +123,7 @@ public class ServiceAPITest {
     @Test
     public final void testLogin() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -200,10 +199,10 @@ public class ServiceAPITest {
     public final void testBlockUser() {
 
         try {
-            session.unblockUser(null);
+            session.blockUser(null);
             fail("Problem in blockUser with null username.");
         } catch (UserException e1) {
-            e1.printStackTrace();
+            // e1.printStackTrace();
         } catch (Exception e) {
             fail("Problem in blockUser with null username.");
         }
@@ -223,6 +222,7 @@ public class ServiceAPITest {
         }
 
         try {
+            session.blockUser("test_username");
             session.blockUser("test_username");
         } catch (UserException e) {
             System.out.println(e.getMessage());
@@ -250,7 +250,7 @@ public class ServiceAPITest {
             session.unblockUser(null);
             fail("Problem in unblockUser with null username.");
         } catch (UserException e1) {
-            e1.printStackTrace();
+
         } catch (Exception e) {
             fail("Problem in unblockUser with null username.");
         }
@@ -270,6 +270,7 @@ public class ServiceAPITest {
         }
 
         try {
+            session.blockUser("test_username");
             session.unblockUser("test_username");
         } catch (UserException e) {
             fail("Problem in unblockUser.");
@@ -289,7 +290,6 @@ public class ServiceAPITest {
             session.changeUserPermission(null, Permission.COMMON);
             fail("Problem in changeUserPermission with null Permission.");
         } catch (UserException e1) {
-            e1.printStackTrace();
         } catch (Exception e) {
             fail("Problem in changeUserPermission with null username.");
         }
@@ -298,7 +298,6 @@ public class ServiceAPITest {
             session.changeUserPermission("test_username", null);
             fail("Problem in changeUserPermission with null Permission.");
         } catch (UserException e1) {
-            e1.printStackTrace();
         } catch (Exception e) {
             fail("Problem in changeUserPermission with null Permission.");
         }
@@ -336,7 +335,6 @@ public class ServiceAPITest {
             session.changeUserPassword(null);
             fail("Problem in changeUserPassword with null Password.");
         } catch (UserException e1) {
-            e1.printStackTrace();
         } catch (Exception e) {
             fail("Problem in changeUserPassword with null Password.");
         }
@@ -386,7 +384,7 @@ public class ServiceAPITest {
     public final void testNewQuestion() {
 
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -435,7 +433,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newQuestion.");
             } else {
-                fail("Problem in newQuestion.");
+                assertTrue("Problem in newQuestion.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -450,7 +448,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newQuestion.");
             } else {
-                fail("Problem in newQuestion.");
+                assertTrue("Problem in newQuestion.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -465,7 +463,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newQuestion.");
             } else {
-                fail("Problem in newQuestion.");
+                assertTrue("Problem in newQuestion.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -483,7 +481,7 @@ public class ServiceAPITest {
     @Test
     public final void testNewAnswer() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -543,7 +541,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newAnswer.");
             } else {
-                fail("Problem in newAnswer.");
+                assertTrue("Problem in newAnswer.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -557,7 +555,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newAnswer.");
             } else {
-                fail("Problem in newAnswer.");
+                assertTrue("Problem in newAnswer.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -574,7 +572,7 @@ public class ServiceAPITest {
     @Test
     public final void testNewComment() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -634,7 +632,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newComment.");
             } else {
-                fail("Problem in newComment.");
+                assertTrue("Problem in newComment.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -648,7 +646,7 @@ public class ServiceAPITest {
             if (e.getMessage() == "replicated.id") {
                 fail("Problem in newComment.");
             } else {
-                fail("Problem in newComment.");
+                assertTrue("Problem in newComments.", e.getMessage() == "invalid.contents");
             }
         }
 
@@ -664,7 +662,7 @@ public class ServiceAPITest {
     @Test
     public final void testEditContent() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -767,7 +765,7 @@ public class ServiceAPITest {
     @Test
     public final void testSelectQuestion() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -809,7 +807,7 @@ public class ServiceAPITest {
     @Test
     public final void testSearchQuestion() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -836,7 +834,7 @@ public class ServiceAPITest {
         }
 
         assertTrue("Problem in searchQuestion.",
-                session.searchQuestion(session.getLoggedUser().getUserQuestions().get(0).getText())
+                session.searchQuestion(session.getLoggedUser().getUserQuestions().get(0).getTitle())
                         .isEmpty() == false);
 
         session.logout();
@@ -848,7 +846,7 @@ public class ServiceAPITest {
     @Test
     public final void testListAllQuestions() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -860,6 +858,8 @@ public class ServiceAPITest {
                 }
             }
         }
+
+        Integer initialSize = session.listAllQuestions().size();
 
         ArrayList<String> tags = new ArrayList<String>();
         try {
@@ -886,7 +886,8 @@ public class ServiceAPITest {
             }
         }
 
-        assertTrue("Problem in listAllQuestion.", session.listAllQuestions().size() == 2);
+        assertTrue("Problem in listAllQuestion.",
+                session.listAllQuestions().size() == (initialSize + 2));
 
         session.logout();
     }
@@ -899,7 +900,7 @@ public class ServiceAPITest {
     @Test
     public final void testBestAnswer() {
         try {
-            session.login("test_username", "test_password");
+            session.login("test_admin", "test_admin_pass");
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -1162,6 +1163,7 @@ public class ServiceAPITest {
     public final void testGetLoggedUser() {
         try {
             session.login("test_admin", "test_admin_pass");
+
         } catch (UserException e) {
             if (e.getMessage() == "incorrect.password") {
                 fail("Problem in login or account creation.");
@@ -1173,12 +1175,12 @@ public class ServiceAPITest {
                 }
             }
         }
-
         assertTrue("Problem in getLoggedUser.",
-                session.getLoggedUser().getUsername() == "test_admin");
-        assertTrue("Problem in getLoggedUser.",
-                session.getLoggedUser().getPassword() == "test_admin_pass");
+                session.getLoggedUser().getUsername().contentEquals("test_admin"));
+        assertTrue("ProbletestGetLoggedUserm in getLoggedUser.",
+                session.getLoggedUser().getPassword().contentEquals("test_admin_pass"));
 
         session.logout();
+
     }
 }

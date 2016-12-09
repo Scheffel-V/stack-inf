@@ -38,11 +38,12 @@ public class UserTest {
 
         userList = new ArrayList<User>();
         userList.add(new User()); // 0 - User with no arguments.
-        userList.add(new User("vbscheffel", "123abc", "brsufirefox@gmail.com", "Vinicius")); // 1
-                                                                                             // -
-                                                                                             // User
-                                                                                             // with
-                                                                                             // arguments
+        userList.add(new User("vbscheffel", "123abc", "brsufirefox@gmail.com", "Vinicius",
+                Permission.COMMON)); // 1
+        // -
+        // User
+        // with
+        // arguments
 
         tags = null;
         questions = new ArrayList<Question>();

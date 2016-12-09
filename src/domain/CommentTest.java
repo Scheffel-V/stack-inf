@@ -11,6 +11,8 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import utils.Permission;
+
 /**
  * @author lmrodrigues
  * @author Scheffel-V
@@ -29,7 +31,7 @@ public class CommentTest {
     @Before
     public void setUp() throws Exception {
 
-        user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
+        user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name", Permission.COMMON);
         comment_0 = new Comment();
         comment_1 = new Comment((long) 1, user, "Text");
         comment_2 = new Comment((long) 1, user, "Text");

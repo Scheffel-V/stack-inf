@@ -12,6 +12,8 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import utils.Permission;
+
 /**
  * @author lmrodrigues
  * @author Scheffel-V
@@ -22,7 +24,7 @@ public class AnswerTest {
     ArrayList<Answer>  answers;
     ArrayList<Comment> comments;
 
-    User user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name");
+    User user = new User("Vinicius", "123abc", "brsufirefox@gmail.com", "Name", Permission.COMMON);
 
     Comment comment0 = new Comment((long) 2, user, "Comment Text");
     Comment comment1 = new Comment((long) 3, user, "Comment Text Two");

@@ -249,18 +249,22 @@ public class Session implements ServiceAPI {
             throws ContentsException, UserException {
         User logged = this.getLoggedUser();
 
-        if (logged != null) {
+        if (text != null && content != null) {
+            if (logged != null) {
 
-            if (content instanceof Question)
-                this.contentsController.newComment(logged, text, (Question) content);
-            else if (content instanceof Answer) {
-                this.contentsController.newComment(logged, text, (Answer) content);
+                if (content instanceof Question)
+                    this.contentsController.newComment(logged, text, (Question) content);
+                else if (content instanceof Answer) {
+                    this.contentsController.newComment(logged, text, (Answer) content);
+                } else {
+                    throw new ContentsException("content.not.able.to.comment");
+                }
+
             } else {
-                throw new ContentsException("content.not.able.to.comment");
+                throw new UserException("user.not.logged");
             }
-
         } else {
-            throw new UserException("user.not.logged");
+            throw new ContentsException("invalid.contents");
         }
 
     }
