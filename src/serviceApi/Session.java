@@ -127,7 +127,12 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#blockUser(java.lang.String)
      */
     public void blockUser(String username) throws UserException {
-        this.userController.blockUser(this.getLoggedUser(), username);
+        User logged = this.getLoggedUser();
+        if (logged != null) {
+            this.userController.blockUser(logged, username);
+        } else {
+            throw new UserException("user.not.logged");
+        }
 
     }
 
@@ -136,7 +141,13 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#unblockUser(java.lang.String)
      */
     public void unblockUser(String username) throws UserException {
-        this.userController.unblockUser(this.getLoggedUser(), username);
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.userController.unblockUser(logged, username);
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
@@ -146,7 +157,13 @@ public class Session implements ServiceAPI {
      */
     public void changeUserPermission(String username, Permission newPermission)
             throws UserException {
-        this.userController.changeUserPermission(this.getLoggedUser(), username, newPermission);
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.userController.changeUserPermission(logged, username, newPermission);
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
@@ -154,7 +171,14 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#changeUserPassword(java.lang.String)
      */
     public void changeUserPassword(String newPassword) throws UserException {
-        this.userController.changeUserPassword(this.getLoggedUser(), newPassword);
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.userController.changeUserPassword(this.getLoggedUser(), newPassword);
+        } else {
+            throw new UserException("user.not.logged");
+        }
+
     }
 
     /**
@@ -165,8 +189,13 @@ public class Session implements ServiceAPI {
      */
     public void newQuestion(String text, List<String> tags, String title)
             throws UserException, ContentsException {
-        User author = this.getLoggedUser();
-        this.contentsController.newQuestion(author, text, tags, title);
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.contentsController.newQuestion(logged, text, tags, title);
+        } else {
+            throw new UserException("user.not.logged");
+        }
 
     }
 
@@ -178,9 +207,13 @@ public class Session implements ServiceAPI {
      * 
      */
     public void newAnswer(String text, Long questionID) throws ContentsException, UserException {
-        User author = this.getLoggedUser();
-        this.contentsController.newAnswer(author, text, questionID);
+        User logged = this.getLoggedUser();
 
+        if (logged != null) {
+            this.contentsController.newAnswer(logged, text, questionID);
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
@@ -193,26 +226,37 @@ public class Session implements ServiceAPI {
      */
     public void newComment(String text, AbstractContent content)
             throws ContentsException, UserException {
-        User author = this.getLoggedUser();
+        User logged = this.getLoggedUser();
 
-        if (content instanceof Question)
-            this.contentsController.newComment(author, text, (Question) content);
-        else if (content instanceof Answer) {
-            this.contentsController.newComment(author, text, (Answer) content);
+        if (logged != null) {
+
+            if (content instanceof Question)
+                this.contentsController.newComment(logged, text, (Question) content);
+            else if (content instanceof Answer) {
+                this.contentsController.newComment(logged, text, (Answer) content);
+            } else {
+                throw new ContentsException("content.not.able.to.comment");
+            }
+
         } else {
-            throw new ContentsException("content.not.able.to.comment");
+            throw new UserException("user.not.logged");
         }
 
     }
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#editContent(domain.AbstractContent)
      */
-    public void editContent(AbstractContent content) throws ContentsException {
-        User user = this.getLoggedUser();
+    public void editContent(AbstractContent content) throws ContentsException, UserException {
+        User logged = this.getLoggedUser();
 
-        this.contentsController.editContent(user, content);
+        if (logged != null) {
+            this.contentsController.editContent(logged, content);
+        } else {
+            throw new UserException("user.not.logged");
+        }
 
     }
 
@@ -222,9 +266,13 @@ public class Session implements ServiceAPI {
      * @see serviceApi.ServiceAPI#deleteContent(domain.AbstractContent)
      */
     public void deleteContent(AbstractContent content) throws ContentsException, UserException {
-        User user = this.getLoggedUser();
+        User logged = this.getLoggedUser();
 
-        this.contentsController.deleteContent(user, content);
+        if (logged != null) {
+            this.contentsController.deleteContent(logged, content);
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
@@ -255,54 +303,79 @@ public class Session implements ServiceAPI {
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#bestAnswer(java.lang.Integer,
      *      java.lang.Integer)
      */
-    public void bestAnswer(Long questionID, Long answerID) throws ContentsException {
-        User user = this.getLoggedUser();
-        this.contentsController.bestAnswer(user, questionID, answerID);
+    public void bestAnswer(Long questionID, Long answerID) throws ContentsException, UserException {
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.contentsController.bestAnswer(logged, questionID, answerID);
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#closeQuestion(java.lang.Integer)
      */
-    public void closeQuestion(Long questionID) throws ContentsException {
-        User user = this.getLoggedUser();
-        this.contentsController.closeQuestion(user, questionID);
+    public void closeQuestion(Long questionID) throws ContentsException, UserException {
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.contentsController.closeQuestion(logged, questionID);
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#openQuestion(java.lang.Integer)
      */
-    public void openQuestion(Long questionID) throws ContentsException {
-        User user = this.getLoggedUser();
-        this.contentsController.openQuestion(user, questionID);
+    public void openQuestion(Long questionID) throws ContentsException, UserException {
+        User logged = this.getLoggedUser();
+
+        if (logged != null) {
+            this.contentsController.openQuestion(logged, questionID);
+
+        } else {
+            throw new UserException("user.not.logged");
+        }
     }
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#upVoteAnswer(java.lang.Integer)
      */
-    public void upVoteAnswer(Long answerID) throws ContentsException {
+    public void upVoteAnswer(Long answerID) throws ContentsException, UserException {
         User user = this.getLoggedUser();
 
         if (user != null) {
             this.contentsController.upVoteAnswer(answerID);
+        } else {
+            throw new UserException("user.not.logged");
         }
 
     }
 
     /**
      * @throws ContentsException
+     * @throws UserException
      * @see serviceApi.ServiceAPI#downVoteAnswer(java.lang.Integer)
      */
-    public void downVoteAnswer(Long answerID) throws ContentsException {
+    public void downVoteAnswer(Long answerID) throws ContentsException, UserException {
         User user = this.getLoggedUser();
 
         if (user != null) {
             this.contentsController.downVoteAnswer(answerID);
+        } else {
+            throw new UserException("user.not.logged");
         }
 
     }

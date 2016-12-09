@@ -51,23 +51,27 @@ public class ContentsController {
      * @return The created Question
      * @throws ContentsException
      */
-    public Question newQuestion(User logged, String text, List<String> tags, String title)
+    public void newQuestion(User logged, String text, List<String> tags, String title)
             throws ContentsException {
         Long id = this.contentCRUD.getMaxQuestionId() + 1;
 
-        Question newQuestion = new Question(id, logged, text, title, tags);
-        logged.addQuestion(newQuestion);
+        if (text != null && title != null && tags != null) {
+            Question newQuestion = new Question(id, logged, text, title, tags);
+            logged.addQuestion(newQuestion);
 
-        try {
-            this.contentCRUD.create(newQuestion);
-        } catch (ContentsException e) {
-            if (e.getMessage() == "invalid.id") {
-                throw new ContentsException("replicated.id");
-            } else {
-                throw new ContentsException("unexpected.error", e);
+            try {
+                this.contentCRUD.create(newQuestion);
+            } catch (ContentsException e) {
+                if (e.getMessage() == "invalid.id") {
+                    throw new ContentsException("replicated.id");
+                } else {
+                    throw new ContentsException("unexpected.error", e);
+                }
             }
+        } else {
+            throw new ContentsException("invalid.contents");
         }
-        return newQuestion;
+
     }
 
     /**
@@ -89,26 +93,31 @@ public class ContentsController {
     public void newAnswer(User logged, String text, Long questionID)
             throws ContentsException, UserException {
         Long answerId = this.contentCRUD.getMaxAnswerId() + 1;
-        Question question = this.contentCRUD.readQuestion(questionID);
 
-        if (question.getStatus() == Status.OPEN) {
-            Answer newAnswer = new Answer(answerId, logged, text);
+        if (text != null && questionID != null) {
+            Question question = this.contentCRUD.readQuestion(questionID);
 
-            question.addAnswer(newAnswer);
-            logged.addAnswer(newAnswer);
+            if (question.getStatus() == Status.OPEN) {
+                Answer newAnswer = new Answer(answerId, logged, text);
 
-            try {
-                this.contentCRUD.update(question);
-            } catch (ContentsException e) {
-                if (e.getMessage() == "invalid.id") {
-                    throw new ContentsException("replicated.id");
-                } else {
-                    throw new ContentsException("unexpected.error", e);
+                question.addAnswer(newAnswer);
+                logged.addAnswer(newAnswer);
+
+                try {
+                    this.contentCRUD.update(question);
+                } catch (ContentsException e) {
+                    if (e.getMessage() == "invalid.id") {
+                        throw new ContentsException("replicated.id");
+                    } else {
+                        throw new ContentsException("unexpected.error", e);
+                    }
                 }
-            }
 
+            } else {
+                throw new ContentsException("closed.question");
+            }
         } else {
-            throw new ContentsException("closed.question");
+            throw new ContentsException("invalid.contents");
         }
     }
 
@@ -128,21 +137,25 @@ public class ContentsController {
     public void newComment(User logged, String text, Question question)
             throws ContentsException, UserException {
         Long commentId = this.contentCRUD.getMaxCommentId() + 1;
-        Comment newComment = new Comment(commentId, logged, text);
 
-        question.addComment(newComment);
-        logged.addComment(newComment);
+        if (text != null && question != null) {
+            Comment newComment = new Comment(commentId, logged, text);
 
-        try {
-            this.contentCRUD.update(question);
-        } catch (ContentsException e) {
-            if (e.getMessage() == "invalid.id") {
-                throw new ContentsException("replicated.id");
-            } else {
-                throw new ContentsException("unexpected.error", e);
+            question.addComment(newComment);
+            logged.addComment(newComment);
+
+            try {
+                this.contentCRUD.update(question);
+            } catch (ContentsException e) {
+                if (e.getMessage() == "invalid.id") {
+                    throw new ContentsException("replicated.id");
+                } else {
+                    throw new ContentsException("unexpected.error", e);
+                }
             }
+        } else {
+            throw new ContentsException("invalid.contents");
         }
-
     }
 
     /**
@@ -161,21 +174,25 @@ public class ContentsController {
     public void newComment(User logged, String text, Answer answer)
             throws ContentsException, UserException {
         Long commentId = this.contentCRUD.getMaxCommentId() + 1;
-        Comment newComment = new Comment(commentId, logged, text);
 
-        answer.addComment(newComment);
-        logged.addComment(newComment);
+        if (text != null && answer != null) {
+            Comment newComment = new Comment(commentId, logged, text);
 
-        try {
-            this.contentCRUD.update(answer);
-        } catch (ContentsException e) {
-            if (e.getMessage() == "invalid.id") {
-                throw new ContentsException("replicated.id");
-            } else {
-                throw new ContentsException("unexpected.error", e);
+            answer.addComment(newComment);
+            logged.addComment(newComment);
+
+            try {
+                this.contentCRUD.update(answer);
+            } catch (ContentsException e) {
+                if (e.getMessage() == "invalid.id") {
+                    throw new ContentsException("replicated.id");
+                } else {
+                    throw new ContentsException("unexpected.error", e);
+                }
             }
+        } else {
+            throw new ContentsException("invalid.contents");
         }
-
     }
 
     /**
